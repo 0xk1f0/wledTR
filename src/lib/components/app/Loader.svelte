@@ -1,56 +1,73 @@
+<!--
+    The MIT License (MIT)
+
+    Copyright (c) Utkarsh Verma
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy of
+    this software and associated documentation files (the "Software"), to deal in
+    the Software without restriction, including without limitation the rights to
+    use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+    the Software, and to permit persons to whom the Software is furnished to do so,
+    subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+    FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+    COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+    IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
 <script lang="ts">
+    import { fade } from 'svelte/transition';
+
+    export let text: string = '';
 </script>
 
-<div class="lds-ripple">
-    <div></div>
-    <div></div>
+<div transition:fade={{ delay: 300, duration: 600 }}>
+    <div class="absolute z-30 left-[calc(50%-64px)] top-[calc(50%-64px)]">
+        <div class="flex flex-col justify-center text-center">
+            <svg fill="#fff" width="128" height="128" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                ><style>
+                    .spinner_l9ve {
+                        animation: spinner_rcyq 1.2s cubic-bezier(0.52, 0.6, 0.25, 0.99) infinite;
+                    }
+                    .spinner_cMYp {
+                        animation-delay: 0.4s;
+                    }
+                    .spinner_gHR3 {
+                        animation-delay: 0.8s;
+                    }
+                    @keyframes spinner_rcyq {
+                        0% {
+                            transform: translate(12px, 12px) scale(0);
+                            opacity: 1;
+                        }
+                        100% {
+                            transform: translate(0, 0) scale(1);
+                            opacity: 0;
+                        }
+                    }
+                </style><path
+                    class="spinner_l9ve"
+                    d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"
+                    transform="translate(12, 12) scale(0)"
+                /><path
+                    class="spinner_l9ve spinner_cMYp"
+                    d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"
+                    transform="translate(12, 12) scale(0)"
+                /><path
+                    class="spinner_l9ve spinner_gHR3"
+                    d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"
+                    transform="translate(12, 12) scale(0)"
+                /></svg
+            >
+            {#if text != ''}
+                <p class="animate-pulse">{text}</p>
+            {/if}
+        </div>
+    </div>
 </div>
-
-<style>
-    .lds-ripple {
-        display: inline-block;
-        position: relative;
-        width: 128px;
-        height: 128px;
-    }
-    .lds-ripple div {
-        position: absolute;
-        border: 4px solid #fff;
-        opacity: 1;
-        border-radius: 50%;
-        animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
-    }
-    .lds-ripple div:nth-child(2) {
-        animation-delay: -0.5s;
-    }
-    @keyframes lds-ripple {
-        0% {
-            top: 64px;
-            left: 64px;
-            width: 0;
-            height: 0;
-            opacity: 0;
-        }
-        4.9% {
-            top: 64px;
-            left: 64px;
-            width: 0;
-            height: 0;
-            opacity: 0;
-        }
-        5% {
-            top: 64px;
-            left: 64px;
-            width: 0;
-            height: 0;
-            opacity: 1;
-        }
-        100% {
-            top: 0px;
-            left: 0px;
-            width: 128px;
-            height: 128px;
-            opacity: 0;
-        }
-    }
-</style>
