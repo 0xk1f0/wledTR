@@ -34,4 +34,4 @@ clean:
 	rm -rf build/
 	rm -rf .svelte-kit/
 
-.PHONY: setup android linux clean
+.PHONY: init android linux clean
