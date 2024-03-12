@@ -8,6 +8,7 @@
     import { onMount, createEventDispatcher } from 'svelte';
 
     export let width: number = 250;
+    export let initial: string = '#ffffff';
 
     const dispatch = createEventDispatcher();
 
@@ -21,7 +22,7 @@
     onMount(() => {
         let colorPicker: any = new (iro as any).ColorPicker('#picker', {
             width: width,
-            color: '#fff',
+            color: initial,
             borderWidth: 2,
             layout: [
                 {

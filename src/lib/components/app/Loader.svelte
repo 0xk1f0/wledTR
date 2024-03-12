@@ -27,7 +27,7 @@
     export let text: string = '';
 </script>
 
-<div transition:fade={{ delay: 300, duration: 600 }}>
+<div transition:fade={{ delay: 0, duration: 600 }}>
     <div class="absolute z-30 left-[calc(50%-64px)] top-[calc(50%-64px)]">
         <div class="flex flex-col justify-center text-center">
             <svg fill="#fff" width="128" height="128" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"

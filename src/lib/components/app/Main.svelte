@@ -1,6 +1,7 @@
 <script lang="ts">
     import { Button } from '$lib/components/ui/button/index.js';
     import Switch from '$lib/components/ui/switch/switch.svelte';
+    import { toast } from 'svelte-sonner';
     import Label from '../ui/label/label.svelte';
     import Loader from './Loader.svelte';
     import Picker from './Picker.svelte';
@@ -10,7 +11,7 @@
     import { invoke } from '@tauri-apps/api/core';
 
     // @TODO: Dont make this hardcoded
-    const HOST = "1.2.3.4"
+    const HOST = '1.2.3.4';
 
     let loading = false;
     let powered = false;
@@ -45,9 +46,14 @@
         });
         if (result == 'on') {
             powered = true;
-        } else {
+        } else if (result == 'off') {
             powered = false;
+        } else {
+            toast.warning('Action Failed', {
+                description: result
+            });
         }
+        await sleep(200);
         loading = false;
     }
 
@@ -60,6 +66,12 @@
             g: currentRgb.g,
             b: currentRgb.b
         });
+        if (result != 'ok') {
+            toast.warning('Action Failed', {
+                description: result
+            });
+        }
+        await sleep(200);
         loading = false;
     }
 
@@ -80,7 +92,11 @@
             <p class="font-bold text-2xl mt-6">wledTR</p>
         </div>
         <div class="flex flex-1 flex-col justify-center items-center space-y-10">
-            <Picker width={Math.max(Math.min(Math.round(screenWidth * 0.66), 450), 100)} on:color={colorChange} />
+            <Picker
+                bind:initial={currentColor}
+                width={Math.max(Math.min(Math.round(screenWidth * 0.66), 450), 100)}
+                on:color={colorChange}
+            />
             <p class="text-lg font-bold uppercase" style="color: {currentColor}">{currentColor}</p>
             <div class="flex flex-col justify-center items-center space-y-5">
                 <Switch class="scale-[175%]" id="power-switch" bind:checked={powered} on:click={setPower} />
@@ -91,6 +107,7 @@
                 class="font-semibold h-16 text-xl border-[3px]"
                 size="icon"
                 variant="outline"
+                disabled={!powered}
                 on:click={setColor}>Apply</Button
             >
         </div>

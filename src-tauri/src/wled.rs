@@ -1,5 +1,6 @@
 use reqwest::Client;
 use serde::Deserialize;
+use std::time::Duration;
 
 #[derive(Deserialize)]
 struct NormalResponse {
@@ -24,16 +25,17 @@ pub async fn send_power(host: String) -> Result<String, String> {
     // post to host
     let response = Client::new()
         .post(url)
+        .timeout(Duration::from_secs(10))
         .json(&payload)
         .send()
         .await
-        .map_err(|e| e.to_string())?;
+        .map_err(|_| "Request Error".to_string())?;
 
     // convert to JSON
     let json_body = response
         .json::<PowerResponse>()
         .await
-        .map_err(|e| e.to_string())?;
+        .map_err(|_| "Decode Error".to_string())?;
 
     if json_body.on == true {
         return Ok("on".to_string());
@@ -60,16 +62,17 @@ pub async fn send_color(host: String, rgb: (u8, u8, u8)) -> Result<String, Strin
     // post to host
     let response = Client::new()
         .post(url)
+        .timeout(Duration::from_secs(10))
         .json(&payload)
         .send()
         .await
-        .map_err(|e| e.to_string())?;
+        .map_err(|_| "Request Error".to_string())?;
 
     // convert to JSON
     let json_body = response
         .json::<NormalResponse>()
         .await
-        .map_err(|e| e.to_string())?;
+        .map_err(|_| "Decode Error".to_string())?;
 
     if json_body.success == true {
         return Ok("ok".to_string());

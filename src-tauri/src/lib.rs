@@ -10,11 +10,13 @@ pub fn run() {
 
 #[tauri::command]
 async fn power_toggle(host: String) -> String {
-    wled::send_power(host).await.unwrap()
+    wled::send_power(host).await.unwrap_or_else(|e| e)
 }
 
 #[tauri::command]
 async fn set_color(host: String, r: u8, g: u8, b: u8) -> String {
     let color_vector: (u8, u8, u8) = (r, g, b);
-    wled::send_color(host, color_vector).await.unwrap()
+    wled::send_color(host, color_vector)
+        .await
+        .unwrap_or_else(|e| e)
 }
