@@ -1,10 +1,35 @@
-use crate::responses::{NormalResponse, PowerResponse};
+use crate::responses::{InfoResponse, NormalResponse, PowerResponse};
 use reqwest::Client;
 use std::time::Duration;
 
 pub struct WLEDController;
 
 impl WLEDController {
+    pub async fn check_info(host: String) -> Result<String, String> {
+        // concat to full URL
+        let url = format!("http://{}/json/info", host);
+
+        // post to host
+        let response = Client::new()
+            .get(url)
+            .timeout(Duration::from_secs(5))
+            .send()
+            .await
+            .map_err(|_| "Request Error".to_string())?;
+
+        // get response text
+        let json_body = response
+            .json::<InfoResponse>()
+            .await
+            .map_err(|_| "Invalid Device".to_string())?;
+
+        if json_body.ip != "" {
+            return Ok(json_body.ip);
+        }
+
+        Err("no ip".to_string())
+    }
+
     pub async fn get_state(host: String) -> Result<String, String> {
         // concat to full URL
         let url = format!("http://{}/json/state", host);

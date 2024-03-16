@@ -6,15 +6,24 @@ use wled::WLEDController;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_store::Builder::default().build())
         .invoke_handler(tauri::generate_handler![
             power_toggle,
             set_color,
             get_state,
             get_info,
-            set_brightness
+            set_brightness,
+            check_info
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[tauri::command]
+async fn check_info(host: String) -> String {
+    WLEDController::check_info(host)
+        .await
+        .unwrap_or_else(|e| e)
 }
 
 #[tauri::command]
@@ -42,5 +51,7 @@ async fn get_state(host: String) -> String {
 
 #[tauri::command]
 async fn set_brightness(host: String, brightness: u8) -> String {
-    WLEDController::set_brightness(host, brightness).await.unwrap_or_else(|e| e)
+    WLEDController::set_brightness(host, brightness)
+        .await
+        .unwrap_or_else(|e| e)
 }

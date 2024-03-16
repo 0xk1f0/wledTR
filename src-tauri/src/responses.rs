@@ -13,7 +13,7 @@ pub struct PowerResponse {
 #[derive(Deserialize)]
 pub struct Wifi {
     pub bssid: String,
-    pub rssi: usize,
+    pub rssi: isize,
     pub signal: usize,
     pub channel: usize,
 }
@@ -45,7 +45,6 @@ pub struct InfoResponse {
     pub opt: usize,
     pub brand: String,
     pub product: String,
-    pub btype: String,
     pub mac: String,
     pub ip: String,
     pub wifi: Wifi,
