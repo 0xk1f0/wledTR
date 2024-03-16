@@ -1,5 +1,12 @@
 export type Color = [number, number, number]
 
+export type WifiData = {
+    bssid: string;
+    rssi: number;
+    signal: number;
+    channel: number; 
+}
+
 export type Segments = {
     start: number,
     stop: number,
@@ -24,15 +31,9 @@ export type InfoResponse = {
     opt: number,
     brand: string,
     product: string,
-    btype: string,
     mac: string,
     ip: string,
-    wifi: {
-        bssid: string,
-        rssi: number,
-        signal: number,
-        channel: number
-    }
+    wifi: WifiData
 }
 
 export type NormalResponse = {

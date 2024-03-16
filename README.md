@@ -7,11 +7,16 @@ A cross-platform [Tauri]("https://github.com/tauri-apps/tauri") application for 
 
 ## Features
 
+- Save Multiple Devices
 - Toggle light ON/OFF
 - Change color via color-wheel
+- Control Brightness via slider
 
 ## Checklist
 
-- [ ] Basic Light Selection
+- [x] Basic Light Selection
+- [x] Device State Recovery
+- [x] Device Saving
+- [x] Multiple Devices
 - [ ] Preset switching
 - [ ] Light Auto-Discover

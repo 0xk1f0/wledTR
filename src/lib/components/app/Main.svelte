@@ -6,22 +6,26 @@
     import { toast } from 'svelte-sonner';
     // components
     import Label from '../ui/label/label.svelte';
-    import Loader from './Loader.svelte';
-    import Picker from './Picker.svelte';
+    import Loader from './modules/Loader.svelte';
+    import Picker from './modules/Picker.svelte';
+    import SideMenu from './menus/SideMenu.svelte';
+    import InfoTable from './tables/InfoTable.svelte';
+    import DeviceTable from './tables/DeviceTable.svelte';
     // svelte
     import { fade } from 'svelte/transition';
     import { onMount } from 'svelte';
     import { getCurrent } from '@tauri-apps/api/window';
     // tauri
     import { invoke } from '@tauri-apps/api/core';
+    import { Store } from '@tauri-apps/plugin-store';
     // types
     import type { StateResponse, InfoResponse } from '../../types/responses.ts';
+    import type { Device, StoreData } from '$lib/types/store.ts';
 
-    // @TODO: Dont make this hardcoded
-    const HOST = '1.2.3.4';
-
+    let host = '';
     let loading = false;
     let powered = false;
+    let dataStore: Store;
     let brightness: number[] = [0];
     let loaderText = 'Loading';
     let deviceName: string = 'Unknown';
@@ -29,6 +33,11 @@
     let currentRgb: { r: number; g: number; b: number } = { r: 255, g: 255, b: 255 };
     let screenWidth = window.innerWidth;
     let screenHeight = window.innerHeight;
+    let infoData: InfoResponse;
+    let menus = {
+        left: false,
+        right: false
+    };
 
     onMount(async () => {
         await getCurrent().onResized(async () => {
@@ -41,8 +50,10 @@
                 loading = false;
             }
         });
-        await getState();
-        await getInfo();
+        dataStore = new Store('devices.conf');
+        let storeData = await dataStore.get<StoreData>('devices');
+        if (storeData != null && storeData.devices.length > 0) host = storeData.devices[0].host;
+        if (host != '') await refresh();
     });
 
     function toHex(c: number) {
@@ -50,15 +61,25 @@
         return hex.length === 1 ? '0' + hex : hex;
     }
 
+    async function refresh() {
+        powered = false;
+        brightness = [0];
+        deviceName = 'Unknown';
+        currentColor = '#ffffff';
+        currentRgb = { r: 255, g: 255, b: 255 };
+        let success = await getState();
+        if (success) await getInfo();
+    }
+
     async function sleep(ms: number) {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
-    async function getState() {
+    async function getState(): Promise<boolean> {
         loaderText = '';
         loading = true;
         let result: string = await invoke('get_state', {
-            host: HOST
+            host: host
         });
         try {
             let data: StateResponse = JSON.parse(result);
@@ -74,20 +95,22 @@
             toast.warning('Action Failed', {
                 description: result
             });
+            return false;
         }
         await sleep(200);
         loading = false;
+        return true;
     }
 
     async function getInfo() {
         loaderText = '';
         loading = true;
         let result: string = await invoke('get_info', {
-            host: HOST
+            host: host
         });
         try {
-            let data: InfoResponse = JSON.parse(result);
-            deviceName = data.name;
+            infoData = JSON.parse(result);
+            deviceName = infoData.name;
         } catch {
             toast.warning('Action Failed', {
                 description: result
@@ -101,7 +124,7 @@
         loaderText = '';
         loading = true;
         let result: string = await invoke('power_toggle', {
-            host: HOST
+            host: host
         });
         if (result == 'on') {
             powered = true;
@@ -121,7 +144,7 @@
         loading = true;
         console.log('Trigger');
         let result: string = await invoke('set_brightness', {
-            host: HOST,
+            host: host,
             brightness: brightness[0]
         });
         if (result != 'ok') {
@@ -137,7 +160,7 @@
         loaderText = 'Applying';
         loading = true;
         let result: string = await invoke('set_color', {
-            host: HOST,
+            host: host,
             r: currentRgb.r,
             g: currentRgb.g,
             b: currentRgb.b
@@ -155,46 +178,74 @@
         currentColor = event.detail.hex;
         currentRgb = event.detail.rgb;
     }
+
+    async function deviceChange(event: any) {
+        menus.left = false;
+        loaderText = '';
+        loading = true;
+        host = event.detail.host;
+        await refresh();
+        await sleep(200);
+        loading = false;
+    }
 </script>
 
 {#if loading}
     <Loader text={loaderText} />
 {:else}
     <div transition:fade={{ delay: 0, duration: 150 }} class="flex flex-1 flex-col justify-between items-center">
-        <div>
-            <p class="font-bold text-2xl mt-6">{deviceName}</p>
+        <div class="flex flex-row w-full justify-between items-center mt-3">
+            <div class="ml-3">
+                <SideMenu bind:open={menus.left} side="left" title="Lights">
+                    <DeviceTable on:select={deviceChange} />
+                </SideMenu>
+            </div>
+            {#if host != ''}
+                <p class="font-bold text-3xl align-middle">{deviceName}</p>
+                <div class="mr-3">
+                    <SideMenu bind:open={menus.right} side="right" title="Info">
+                        <InfoTable bind:data={infoData} />
+                    </SideMenu>
+                </div>
+            {/if}
         </div>
-        <div class="flex flex-1 flex-col justify-center items-center space-y-10">
-            <Picker
-                bind:initial={currentColor}
-                width={Math.max(Math.min(Math.round(screenWidth * 0.66), 450), 100)}
-                on:color={colorChange}
-            />
-            <p class="text-lg font-bold uppercase" style="color: {currentColor}">{currentColor}</p>
-            <div class="flex flex-col w-3/4 justify-center items-center space-y-5">
-                <Slider id="brightness-slider" bind:value={brightness} max={255} step={1} />
-                <Label class="font-bold text-xl" for="brightness-slider"
-                    >{brightness[0]} ({Math.round((brightness[0] * 100) / 255)}%)</Label
+        {#if host == ''}
+            <div class="flex h-full w-full justify-center items-center">
+                <p>Select a Device</p>
+            </div>
+        {:else}
+            <div class="flex flex-1 flex-col justify-center items-center space-y-10">
+                <Picker
+                    bind:initial={currentColor}
+                    width={Math.max(Math.min(Math.round(screenWidth * 0.66), 450), 100)}
+                    on:color={colorChange}
+                />
+                <p class="text-lg font-bold uppercase" style="color: {currentColor}">{currentColor}</p>
+                <div class="flex flex-col w-3/4 justify-center items-center space-y-5">
+                    <Slider id="brightness-slider" bind:value={brightness} max={255} step={1} />
+                    <Label class="font-bold text-xl" for="brightness-slider"
+                        >{brightness[0]} ({Math.round((brightness[0] * 100) / 255)}%)</Label
+                    >
+                </div>
+                <div class="flex flex-col justify-center items-center space-y-5">
+                    <Switch class="scale-[175%]" id="power-switch" bind:checked={powered} on:click={setPower} />
+                    <Label class="font-bold text-xl" for="power-switch">{powered ? 'ON' : 'OFF'}</Label>
+                </div>
+                <Button
+                    style="width: {Math.max(Math.min(Math.round(screenWidth * 0.33), 450), 100)}px"
+                    class="font-semibold h-16 text-xl border-[3px]"
+                    size="icon"
+                    variant="outline"
+                    disabled={!powered}
+                    on:click={() => {
+                        setColor();
+                        setBrightness();
+                    }}>Apply</Button
                 >
             </div>
-            <div class="flex flex-col justify-center items-center space-y-5">
-                <Switch class="scale-[175%]" id="power-switch" bind:checked={powered} on:click={setPower} />
-                <Label class="font-bold text-xl" for="power-switch">{powered ? 'ON' : 'OFF'}</Label>
+            <div>
+                <p class="sticky bottom-0 left-1/2 font-bold text-sm mb-6 italic text-gray-600 opacity-75">wledTR</p>
             </div>
-            <Button
-                style="width: {Math.max(Math.min(Math.round(screenWidth * 0.33), 450), 100)}px"
-                class="font-semibold h-16 text-xl border-[3px]"
-                size="icon"
-                variant="outline"
-                disabled={!powered}
-                on:click={() => {
-                    setColor();
-                    setBrightness();
-                }}>Apply</Button
-            >
-        </div>
-        <div>
-            <p class="font-bold text-sm mb-6 italic text-gray-600 opacity-75">wledTR - Made by 0xk1f0</p>
-        </div>
+        {/if}
     </div>
 {/if}
