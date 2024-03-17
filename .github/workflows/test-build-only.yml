@@ -75,8 +75,6 @@ jobs:
       - name: install android sdks
         run: |
           sdkmanager --install "build-tools;30.0.3"
-          sdkmanager --install "platform-tools"
-          sdkmanager --install "cmdline-tools;latest"
           sdkmanager --install "platforms;android-33"
           sdkmanager --install "ndk;25.2.9519653"
           sdkmanager --install "emulator"
@@ -84,10 +82,8 @@ jobs:
       - name: install, setup and build
         run: |
           npm install
-          ls /usr/lib/jvm/
-          ls /usr/lib/android-sdk/
-          ANDROID_HOME="/usr/lib/android-sdk/" NDK_HOME="/opt/android-sdk/ndk/25.2.9519653" JAVA_HOME="/usr/lib/jvm/java-17-openjdk" npm run tauri android init
-          ANDROID_HOME="/usr/lib/android-sdk/" NDK_HOME="/opt/android-sdk/ndk/25.2.9519653" JAVA_HOME="/usr/lib/jvm/java-17-openjdk" npm run tauri android build
+          ANDROID_HOME="/usr/local/lib/android/sdk/" NDK_HOME="/usr/local/lib/android/sdk/ndk/25.2.9519653" JAVA_HOME="/usr/lib/jvm/java-17-openjdk" npm run tauri android init
+          ANDROID_HOME="/usr/local/lib/android/sdk/" NDK_HOME="/usr/local/lib/android/sdk/ndk/25.2.9519653" JAVA_HOME="/usr/lib/jvm/java-17-openjdk" npm run tauri android build
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
