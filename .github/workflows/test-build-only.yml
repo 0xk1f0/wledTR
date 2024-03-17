@@ -82,8 +82,8 @@ jobs:
       - name: install, setup and build
         run: |
           npm install
-          ANDROID_HOME="/usr/local/lib/android/sdk/" NDK_HOME="/usr/local/lib/android/sdk/ndk/25.2.9519653" JAVA_HOME="/usr/lib/jvm/java-17-openjdk" npm run tauri android init
-          ANDROID_HOME="/usr/local/lib/android/sdk/" NDK_HOME="/usr/local/lib/android/sdk/ndk/25.2.9519653" JAVA_HOME="/usr/lib/jvm/java-17-openjdk" npm run tauri android build
+          ANDROID_HOME="/usr/local/lib/android/sdk/" NDK_HOME="/usr/local/lib/android/sdk/ndk/25.2.9519653" JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64" npm run tauri android init
+          ANDROID_HOME="/usr/local/lib/android/sdk/" NDK_HOME="/usr/local/lib/android/sdk/ndk/25.2.9519653" JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64" npm run tauri android build
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
