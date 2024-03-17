@@ -1,7 +1,7 @@
 {
-  "productName": "wledTR",
+  "productName": "wled_tr",
   "version": "0.1.0",
-  "identifier": "com.wledtr.app",
+  "identifier": "org.wledtr.app",
   "build": {
     "frontendDist": "../build",
     "devUrl": "http://localhost:5173",

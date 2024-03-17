@@ -1,31 +1,35 @@
 <script lang="ts">
+    // shadcdn
     import * as Table from '$lib/components/ui/table';
     import { Checkbox } from '$lib/components/ui/checkbox';
     import Button from '$lib/components/ui/button/button.svelte';
-    import { onMount, createEventDispatcher } from 'svelte';
-    import { Store } from '@tauri-apps/plugin-store';
-    import Spinner from '../modules/Spinner.svelte';
     import { toast } from 'svelte-sonner';
+    // svelte
+    import { onMount, createEventDispatcher } from 'svelte';
+    // components
+    import Spinner from '$lib/components/app/modules/Spinner.svelte';
+    // tauri
     import { invoke } from '@tauri-apps/api/core';
+    // types
     import type { Device, StoreData } from '$lib/types/store.ts';
+    // utils
+    import StorageHandler from '$lib/util/storage';
 
-    let dataStore: Store;
+    const dispatch = createEventDispatcher();
     let loading = false;
     let addingNew: boolean = false;
     let newInput: string = '';
-    let data: Device[] = [];
     let checkDevices: Set<Device> = new Set();
-    const dispatch = createEventDispatcher();
+    let data: StoreData = { devices: [] };
+    let storage: StorageHandler = new StorageHandler('devices.conf');
 
     onMount(async () => {
+        data = await storage.open().load();
         loading = true;
-        dataStore = new Store('devices.conf');
-        let storeData = await dataStore.get<StoreData>('devices');
-        if (storeData != null) data = storeData.devices;
         loading = false;
     });
 
-    async function dispatchSelect(host: string) {
+    function dispatchSelect(host: string) {
         dispatch('select', {
             host: host
         });
@@ -67,31 +71,24 @@
 
     async function addDevice(device: Device) {
         loading = true;
-        if (await checkInfo(device.host) != false) {
-            data.push(device);
-            await dataStore.set('devices', { devices: data });
-            await dataStore.save();
-        }
+        let checkIsValid = await checkInfo(device.host);
+        if (checkIsValid) (await storage.open().add().single(device)).save();
         addingNew = false;
         newInput = '';
-        // svelte reinstate fix
-        data = data;
+        data = await storage.open().load();
         await sleep(200);
         loading = false;
+        if (checkIsValid) dispatch('change');
     }
 
     async function deleteDevices(devices: Set<Device>) {
         loading = true;
-        for (let entry of devices.values()) {
-            data.splice(data.indexOf(entry), 1);
-        }
-        await dataStore.set('devices', { devices: data });
-        await dataStore.save();
+        (await storage.open().remove().multiple(Array.from(devices.values()))).save();
         checkDevices.clear();
-        // svelte reinstate fix
-        data = data;
+        data = await storage.open().load();
         await sleep(200);
         loading = false;
+        dispatch('change');
     }
 </script>
 
@@ -99,22 +96,22 @@
     <div class="flex h-full justify-center items-center">
         <Spinner text="" />
     </div>
-{:else if Object.keys(data).length < 1 && !addingNew}
+{:else if data.devices.length < 1 && !addingNew}
     <div class="flex flex-col space-y-4 h-full justify-center items-center">
         <p>No Devices Found :&lbrace;</p>
         <Button
-                size="lg"
-                class="text-lg bg-blue-900 text-white"
-                on:click={() => {
-                    addingNew = true;
-                }}
-                disabled={addingNew}>Add</Button
-            >
+            size="lg"
+            class="text-lg bg-blue-900 text-white"
+            on:click={() => {
+                addingNew = true;
+            }}
+            disabled={addingNew}>Add</Button
+        >
     </div>
 {:else}
     <Table.Root>
         <Table.Body>
-            {#each data as device}
+            {#each data.devices as device}
                 <Table.Row>
                     <Table.Cell class="text-left text-xl" on:click={() => dispatchSelect(device.host)}
                         >{device.host}</Table.Cell

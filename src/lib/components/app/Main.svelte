@@ -5,27 +5,27 @@
     import { Slider } from '$lib/components/ui/slider';
     import { toast } from 'svelte-sonner';
     // components
-    import Label from '../ui/label/label.svelte';
-    import Loader from './modules/Loader.svelte';
-    import Picker from './modules/Picker.svelte';
-    import SideMenu from './menus/SideMenu.svelte';
-    import InfoTable from './tables/InfoTable.svelte';
-    import DeviceTable from './tables/DeviceTable.svelte';
+    import Label from '$lib/components/ui/label/label.svelte';
+    import Loader from '$lib/components/app/modules/Loader.svelte';
+    import Picker from '$lib/components/app/modules/Picker.svelte';
+    import SideMenu from '$lib/components/app/menus/SideMenu.svelte';
+    import InfoTable from '$lib/components/app/tables/InfoTable.svelte';
+    import DeviceTable from '$lib/components/app/tables/DeviceTable.svelte';
     // svelte
     import { fade } from 'svelte/transition';
     import { onMount } from 'svelte';
     import { getCurrent } from '@tauri-apps/api/window';
     // tauri
     import { invoke } from '@tauri-apps/api/core';
-    import { Store } from '@tauri-apps/plugin-store';
     // types
-    import type { StateResponse, InfoResponse } from '../../types/responses.ts';
-    import type { Device, StoreData } from '$lib/types/store.ts';
+    import type { StateResponse, InfoResponse } from '$lib/types/responses.ts';
+    import type { StoreData } from '$lib/types/store.ts';
+    // utils
+    import StorageHandler from '$lib/util/storage';
 
     let host = '';
     let loading = false;
     let powered = false;
-    let dataStore: Store;
     let brightness: number[] = [0];
     let loaderText = 'Loading';
     let deviceName: string = 'Unknown';
@@ -38,6 +38,8 @@
         left: false,
         right: false
     };
+    let storage: StorageHandler = new StorageHandler('devices.conf');
+    let data: StoreData = { devices: [] };
 
     onMount(async () => {
         await getCurrent().onResized(async () => {
@@ -50,9 +52,8 @@
                 loading = false;
             }
         });
-        dataStore = new Store('devices.conf');
-        let storeData = await dataStore.get<StoreData>('devices');
-        if (storeData != null && storeData.devices.length > 0) host = storeData.devices[0].host;
+        data = await storage.open().load();
+        if (data.devices.length > 0) host = data.devices[0].host;
         if (host != '') await refresh();
     });
 
@@ -142,7 +143,6 @@
     async function setBrightness() {
         loaderText = '';
         loading = true;
-        console.log('Trigger');
         let result: string = await invoke('set_brightness', {
             host: host,
             brightness: brightness[0]
@@ -188,6 +188,18 @@
         await sleep(200);
         loading = false;
     }
+
+    async function tableChange() {
+        menus.left = false;
+        loaderText = '';
+        loading = true;
+        host = '';
+        data = await storage.open().load();
+        if (data.devices.length > 0) host = data.devices[0].host;
+        if (host != '') await refresh();
+        await sleep(200);
+        loading = false;
+    }
 </script>
 
 {#if loading}
@@ -197,7 +209,7 @@
         <div class="flex flex-row w-full justify-between items-center mt-3">
             <div class="ml-3">
                 <SideMenu bind:open={menus.left} side="left" title="Lights">
-                    <DeviceTable on:select={deviceChange} />
+                    <DeviceTable on:select={deviceChange} on:change={tableChange} />
                 </SideMenu>
             </div>
             {#if host != ''}

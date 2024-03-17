@@ -1,6 +1,6 @@
 <script lang="ts">
     import { fade } from 'svelte/transition';
-    import Spinner from './Spinner.svelte';
+    import Spinner from '$lib/components/app/modules/Spinner.svelte';
 
     export let text: string = '';
 </script>

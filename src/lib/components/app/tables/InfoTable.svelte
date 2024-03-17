@@ -1,6 +1,8 @@
 <script lang="ts">
+    // shadcdn
     import * as Table from '$lib/components/ui/table';
-    import Spinner from '../modules/Spinner.svelte';
+    import Spinner from '$lib/components/app/modules/Spinner.svelte';
+    // types
     import type { InfoResponse, WifiData } from '$lib/types/responses';
 
     export let data: InfoResponse;
