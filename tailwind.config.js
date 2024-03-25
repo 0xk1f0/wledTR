@@ -58,10 +58,10 @@ const config = {
 				sans: [...fontFamily.sans]
 			},
             minHeight: {
-                "respect-header": "calc(100%-3.5rem)"
+                "respect-header": "calc(100% - 3.5rem)"
             },
             maxHeight: {
-                "respect-header": "calc(100%-3.5rem)"
+                "respect-header": "calc(100% - 3.5rem)"
             }
 		}
 	},
