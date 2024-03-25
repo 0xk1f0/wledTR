@@ -1,5 +1,5 @@
 <div align="center">
-  <img style="height: 300px; width: 300px;" src="./static/favicon.png" />
+  <img style="height: 300px; width: 300px;" src="./src-tauri/icons/icon.png" />
   <h1>wledTR</h1>
 
   <p>A cross-platform <a href="https://github.com/tauri-apps/tauri">Tauri</a> application for controlling <a href="https://github.com/Aircoookie/WLED">WLED</a> lights.</p>
