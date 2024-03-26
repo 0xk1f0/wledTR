@@ -1,7 +1,6 @@
 <div align="center">
-  <img style="height: 300px; width: 300px;" src="./src-tauri/icons/icon.png" />
+  <img style="height: 300px; width: 300px;" src="./src-tauri/icons/logo.png" />
   <h1>wledTR</h1>
-
   <p>A cross-platform <a href="https://github.com/tauri-apps/tauri">Tauri</a> application for controlling <a href="https://github.com/Aircoookie/WLED">WLED</a> lights.</p>
 </div>
 
@@ -28,6 +27,44 @@ Unfortunately not all features are accessible via the API and there is also zero
 - Toggle light ON/OFF
 - Change color via color-wheel
 - Control Brightness via slider
+
+## How to Build
+
+This repo includes a Makefile that should make the building process pretty streamlined.
+
+### Linux
+
+Follow the instructions [provided by Tauri](https://beta.tauri.app/guides/prerequisites/#linux), then run:
+
+```bash
+# initialize
+make init
+# build for linux
+make linux
+```
+
+### Android
+
+Follow the instructions [provided by Tauri](https://beta.tauri.app/guides/prerequisites/#android).
+
+This project uses a fixed set of libraries, make sure to install the following:
+
+```bash
+# using the sdkmanager utlitity
+sdkmanager --install "build-tools;30.0.3"
+sdkmanager --install "platforms;android-33"
+sdkmanager --install "ndk;25.2.9519653"
+sdkmanager --install "emulator"
+```
+
+Then run:
+
+```bash
+# initialize
+make init
+# build for linux
+make android
+```
 
 ## Checklist
 

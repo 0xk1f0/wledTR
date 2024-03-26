@@ -84,6 +84,7 @@ jobs:
         run: |
           npm install
           ANDROID_HOME="/usr/local/lib/android/sdk/" NDK_HOME="/usr/local/lib/android/sdk/ndk/25.2.9519653" JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64" npm run tauri android init
+          npm run tauri icon ./src-tauri/icons/logo.png
           ANDROID_HOME="/usr/local/lib/android/sdk/" NDK_HOME="/usr/local/lib/android/sdk/ndk/25.2.9519653" JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64" npm run tauri android build
 
       - name: Upload APK

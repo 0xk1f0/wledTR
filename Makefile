@@ -11,6 +11,7 @@ init:
 	NDK_HOME="/opt/android-sdk/ndk/25.2.9519653" \
 	JAVA_HOME="/usr/lib/jvm/java-17-openjdk" \
 	npm run tauri android init
+	npm run tauri icon ./src-tauri/icons/logo.png
 
 # linux build
 linux:
