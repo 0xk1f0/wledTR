@@ -9,13 +9,9 @@
 
 <Sheet.Root closeOnOutsideClick={true} bind:open={open}>
     <Sheet.Trigger>
-        <span class="font-bold font-mono text-[2.25rem] border-2 px-2 py-0.5 rounded-lg">
-            {#if side == 'left'}
-                &gt;
-            {:else}
-                &lt;
-            {/if}
-        </span>
+        <div class="flex flex-col justify-center text-center">
+            <p class="text-xl font-mono font-bold uppercase">Status</p>
+        </div>
     </Sheet.Trigger>
     <Sheet.Content
         transition={fade}

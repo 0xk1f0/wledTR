@@ -5,7 +5,7 @@
   "build": {
     "frontendDist": "../build",
     "devUrl": "http://localhost:5173",
-    "beforeDevCommand": "npm run checkc && npm run dev",
+    "beforeDevCommand": "npm run check && npm run dev",
     "beforeBuildCommand": "npm run check && npm run build"
   },
   "app": {

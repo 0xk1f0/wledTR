@@ -128,7 +128,8 @@
             {#if addingNew}
                 <Table.Row class="text-left">
                     <Table.Cell class="text-xl">
-                        <input class="bg-[rgba(0,0,0,0)]" bind:value={newInput} />
+                        <!-- svelte-ignore a11y-autofocus -->
+                        <input id="newInput" class="bg-[rgba(0,0,0,0)] border-l-4 border-r-4" bind:value={newInput} autofocus/>
                     </Table.Cell>
                     <Table.Cell class="text-right"
                         ><Button

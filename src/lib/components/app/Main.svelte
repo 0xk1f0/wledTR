@@ -9,6 +9,7 @@
     import Loader from '$lib/components/app/modules/Loader.svelte';
     import Picker from '$lib/components/app/modules/Picker.svelte';
     import SideMenu from '$lib/components/app/menus/SideMenu.svelte';
+    import BottomMenu from '$lib/components/app/menus/BottomMenu.svelte';
     import InfoTable from '$lib/components/app/tables/InfoTable.svelte';
     import DeviceTable from '$lib/components/app/tables/DeviceTable.svelte';
     // svelte
@@ -206,19 +207,9 @@
     <Loader text={loaderText} />
 {:else}
     <div transition:fade={{ delay: 0, duration: 150 }} class="flex flex-1 flex-col justify-between items-center">
-        <div class="flex flex-row w-full justify-between items-center mt-3">
-            <div class="ml-3">
-                <SideMenu bind:open={menus.left} side="left" title="Lights">
-                    <DeviceTable on:select={deviceChange} on:change={tableChange} />
-                </SideMenu>
-            </div>
+        <div class="flex flex-row w-full justify-center items-center mt-3">
             {#if host != ''}
                 <p class="font-bold text-3xl align-middle">{deviceName}</p>
-                <div class="mr-3">
-                    <SideMenu bind:open={menus.right} side="right" title="Info">
-                        <InfoTable bind:data={infoData} />
-                    </SideMenu>
-                </div>
             {/if}
         </div>
         {#if host == ''}
@@ -232,20 +223,22 @@
                     width={Math.max(Math.min(Math.round(screenWidth * 0.66), 450), 100)}
                     on:color={colorChange}
                 />
-                <p class="text-lg font-bold uppercase" style="color: {currentColor}">{currentColor}</p>
+                <p class="text-lg font-bold font-mono uppercase" style="color: {currentColor}">{currentColor}</p>
                 <div class="flex flex-col w-3/4 justify-center items-center space-y-5">
                     <Slider id="brightness-slider" bind:value={brightness} max={255} step={1} />
-                    <Label class="font-bold text-xl" for="brightness-slider"
+                    <Label class="font-bold font-mono text-xl" for="brightness-slider"
                         >{brightness[0]} ({Math.round((brightness[0] * 100) / 255)}%)</Label
                     >
                 </div>
                 <div class="flex flex-col justify-center items-center space-y-5">
                     <Switch class="scale-[175%]" id="power-switch" bind:checked={powered} on:click={setPower} />
-                    <Label class="font-bold text-xl" for="power-switch">{powered ? 'ON' : 'OFF'}</Label>
+                    <Label class="font-bold font-mono text-xl uppercase" for="power-switch"
+                        >{powered ? 'ON' : 'OFF'}</Label
+                    >
                 </div>
                 <Button
                     style="width: {Math.max(Math.min(Math.round(screenWidth * 0.33), 450), 100)}px"
-                    class="font-semibold h-16 text-xl border-[3px]"
+                    class="font-bold font-mono h-16 text-2xl border-none uppercase"
                     size="icon"
                     variant="outline"
                     disabled={!powered}
@@ -255,8 +248,15 @@
                     }}>Apply</Button
                 >
             </div>
-            <div>
-                <p class="sticky bottom-0 left-1/2 font-bold text-sm mb-6 italic text-gray-600 opacity-75">wledTR</p>
+            <div class="flex flex-row justify-center text-center mb-8 space-x-8">
+                <BottomMenu bind:open={menus.left} title="Lights">
+                    <DeviceTable on:select={deviceChange} on:change={tableChange} />
+                </BottomMenu>
+                {#if host != ''}
+                    <SideMenu bind:open={menus.right} side="right" title="Info">
+                        <InfoTable bind:data={infoData} />
+                    </SideMenu>
+                {/if}
             </div>
         {/if}
     </div>
