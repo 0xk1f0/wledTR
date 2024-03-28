@@ -207,16 +207,20 @@
     <Loader text={loaderText} />
 {:else}
     <div transition:fade={{ delay: 0, duration: 150 }} class="flex flex-1 flex-col justify-between items-center">
-        <div class="flex flex-row w-full justify-center items-center mt-3">
-            {#if host != ''}
-                <p class="font-bold text-3xl align-middle">{deviceName}</p>
-            {/if}
-        </div>
         {#if host == ''}
-            <div class="flex h-full w-full justify-center items-center">
-                <p>Select a Device</p>
+            <div class="flex flex-row w-full justify-center items-center mt-8">
+                <p class="font-bold text-3xl align-middle">wledTR</p>
             </div>
+            <div class="flex h-full w-full justify-center items-center">
+                <p class="font-bold text-base">Select/Add a Device</p>
+            </div>
+            <BottomMenu bind:open={menus.left} title="Lights" name="Add">
+                <DeviceTable on:select={deviceChange} on:change={tableChange} />
+            </BottomMenu>
         {:else}
+            <div class="flex flex-row w-full justify-center items-center mt-8">
+                <p class="font-bold text-3xl align-middle">{deviceName}</p>
+            </div>
             <div class="flex flex-1 flex-col justify-center items-center space-y-10">
                 <Picker
                     bind:initial={currentColor}
@@ -248,15 +252,13 @@
                     }}>Apply</Button
                 >
             </div>
-            <div class="flex flex-row justify-center text-center mb-8 space-x-8">
-                <BottomMenu bind:open={menus.left} title="Lights">
+            <div class="flex flex-row justify-center space-x-6">
+                <BottomMenu bind:open={menus.left} title="Lights" name="Edit">
                     <DeviceTable on:select={deviceChange} on:change={tableChange} />
                 </BottomMenu>
-                {#if host != ''}
-                    <SideMenu bind:open={menus.right} side="right" title="Info">
-                        <InfoTable bind:data={infoData} />
-                    </SideMenu>
-                {/if}
+                <SideMenu bind:open={menus.right} side="right" title="Info" name="Info">
+                    <InfoTable bind:data={infoData} />
+                </SideMenu>
             </div>
         {/if}
     </div>

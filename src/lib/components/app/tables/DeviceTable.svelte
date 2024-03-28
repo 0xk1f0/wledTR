@@ -98,7 +98,7 @@
     </div>
 {:else if data.devices.length < 1 && !addingNew}
     <div class="flex flex-col space-y-4 h-full justify-center items-center">
-        <p>No Devices Found :&lbrace;</p>
+        <p class="m-4">No Devices Found :&lbrace;</p>
         <Button
             size="lg"
             class="text-lg bg-blue-900 text-white"
@@ -129,7 +129,12 @@
                 <Table.Row class="text-left">
                     <Table.Cell class="text-xl">
                         <!-- svelte-ignore a11y-autofocus -->
-                        <input id="newInput" class="bg-[rgba(0,0,0,0)] border-l-4 border-r-4" bind:value={newInput} autofocus/>
+                        <input
+                            id="newInput"
+                            class="bg-[rgba(0,0,0,0)] border-l-4 border-r-4"
+                            bind:value={newInput}
+                            autofocus
+                        />
                     </Table.Cell>
                     <Table.Cell class="text-right"
                         ><Button

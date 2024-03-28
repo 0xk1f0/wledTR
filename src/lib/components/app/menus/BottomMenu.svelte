@@ -1,6 +1,8 @@
 <script lang="ts">
     import * as Drawer from '$lib/components/ui/drawer';
     import { fade } from 'svelte/transition';
+
+    export let name: string = '';
     export let title: string = '';
     export let open: boolean = false;
 </script>
@@ -8,7 +10,7 @@
 <Drawer.Root bind:open>
     <Drawer.Trigger>
         <div class="flex flex-col justify-center text-center">
-            <p class="text-xl font-mono font-bold uppercase">Edit</p>
+            <p class="text-xl font-mono font-bold uppercase">{name}</p>
         </div>
     </Drawer.Trigger>
     <Drawer.Content

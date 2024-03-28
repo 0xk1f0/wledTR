@@ -2,15 +2,16 @@
     import * as Sheet from '$lib/components/ui/sheet';
     import { fade } from 'svelte/transition';
 
+    export let name: string = '';
     export let side: 'right' | 'left' = 'left';
     export let title: string = '';
     export let open: boolean = false;
 </script>
 
-<Sheet.Root closeOnOutsideClick={true} bind:open={open}>
+<Sheet.Root closeOnOutsideClick={true} bind:open>
     <Sheet.Trigger>
         <div class="flex flex-col justify-center text-center">
-            <p class="text-xl font-mono font-bold uppercase">Status</p>
+            <p class="text-xl font-mono font-bold uppercase">{name}</p>
         </div>
     </Sheet.Trigger>
     <Sheet.Content
