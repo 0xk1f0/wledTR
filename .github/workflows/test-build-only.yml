@@ -4,12 +4,14 @@ on:
   push:
     branches: [ "master" ]
     paths:
+      - '.github/workflows/**'
       - 'package.json'
       - 'src-tauri/**'
       - 'src/**'
   pull_request:
     branches: [ "master" ]
     paths:
+      - '.github/workflows/**'
       - 'package.json'
       - 'src-tauri/**'
       - 'src/**'
