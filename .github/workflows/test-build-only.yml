@@ -1,4 +1,4 @@
-name: "test-build"
+name: "Build, Sign and Upload"
 
 on:
   push:
@@ -16,8 +16,6 @@ on:
 
 jobs:
   build-tauri-linux:
-    strategy:
-      fail-fast: false
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -45,8 +43,6 @@ jobs:
             src-tauri/target/release/bundle/deb/*.deb
             src-tauri/target/release/bundle/rpm/*.rpm
   build-tauri-android:
-    strategy:
-      fail-fast: false
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -75,9 +71,18 @@ jobs:
           ANDROID_HOME="/usr/local/lib/android/sdk/" NDK_HOME="/usr/local/lib/android/sdk/ndk/25.2.9519653" JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64" npm run tauri android init
           npm run tauri icon ./src-tauri/icons/logo.png
           ANDROID_HOME="/usr/local/lib/android/sdk/" NDK_HOME="/usr/local/lib/android/sdk/ndk/25.2.9519653" JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64" npm run tauri android build
+      - name: Sign APK
+        env:
+          APK_SIGNING_KEY: ${{ secrets.APK_SIGNING_KEY }}
+          APK_SIGNING_PASSWORD: ${{ secrets.APK_SIGNING_PASSWORD }}
+        run: |
+          RELEASE_APK_PATH="src-tauri/gen/android/app/build/outputs/apk/universal/release"
+          echo $APK_SIGNING_KEY | base64 -di > ./keystore.jks
+          echo $APK_SIGNING_PASSWORD | /usr/local/lib/android/sdk/build-tools/30.0.3/apksigner sign --ks keystore.jks ${RELEASE_APK_PATH}/app-universal-release-unsigned.apk
+          mv ${RELEASE_APK_PATH}/app-universal-release-unsigned.apk ${RELEASE_APK_PATH}/app-universal-release.apk
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: tauri-mobile
           path: |
-            src-tauri/gen/android/app/build/outputs/apk/universal/release/*.apk
+            src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk
