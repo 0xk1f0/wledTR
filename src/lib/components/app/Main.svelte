@@ -1,15 +1,7 @@
 <script lang="ts">
-    // shadcdn
-    import { Button } from '$lib/components/ui/button/index.js';
-    import Switch from '$lib/components/ui/switch/switch.svelte';
-    import { Slider } from '$lib/components/ui/slider';
-    import { toast } from 'svelte-sonner';
     // components
-    import Label from '$lib/components/ui/label/label.svelte';
     import Loader from '$lib/components/app/modules/Loader.svelte';
     import Picker from '$lib/components/app/modules/Picker.svelte';
-    import SideMenu from '$lib/components/app/menus/SideMenu.svelte';
-    import BottomMenu from '$lib/components/app/menus/BottomMenu.svelte';
     import InfoTable from '$lib/components/app/tables/InfoTable.svelte';
     import DeviceTable from '$lib/components/app/tables/DeviceTable.svelte';
     // svelte
@@ -23,11 +15,21 @@
     import type { StoreData } from '$lib/types/store.ts';
     // utils
     import StorageHandler from '$lib/util/storage';
+    // icons
+    import CheckmarkOutline from '$lib/assets/checkmark-outline.svg';
+    import BookmarkOutline from '$lib/assets/bookmark-outline.svg';
+    import BookmarkSolid from '$lib/assets/bookmark-solid.svg';
+    import LightOutline from '$lib/assets/light-outline.svg';
+    import LightSolid from '$lib/assets/light-solid.svg';
+    import SettingsOutline from '$lib/assets/settings-outline.svg';
+    import SettingsSolid from '$lib/assets/settings-solid.svg';
+    import FireOutline from '$lib/assets/fire-outline.svg';
+    import FireSolid from '$lib/assets/fire-solid.svg';
 
     let host = '';
     let loading = false;
     let powered = false;
-    let brightness: number[] = [0];
+    let brightness: number = 0;
     let loaderText = 'Loading';
     let deviceName: string = 'Unknown';
     let currentColor: string = '#ffffff';
@@ -35,12 +37,13 @@
     let screenWidth = window.innerWidth;
     let screenHeight = window.innerHeight;
     let infoData: InfoResponse;
-    let menus = {
-        left: false,
-        right: false
-    };
     let storage: StorageHandler = new StorageHandler('devices.conf');
     let data: StoreData = { devices: [] };
+    let buttons = {
+        settings: false,
+        light: true,
+        devices: false
+    };
 
     onMount(async () => {
         await getCurrent().onResized(async () => {
@@ -63,9 +66,30 @@
         return hex.length === 1 ? '0' + hex : hex;
     }
 
+    function tabSwitch(type: string) {
+        // reset all
+        buttons = {
+            settings: false,
+            light: false,
+            devices: false
+        };
+        // then eval
+        switch (type) {
+            case 'settings':
+                buttons.settings = true;
+                break;
+            case 'light':
+                buttons.light = true;
+                break;
+            case 'devices':
+                buttons.devices = true;
+                break;
+        }
+    }
+
     async function refresh() {
         powered = false;
-        brightness = [0];
+        brightness = 0;
         deviceName = 'Unknown';
         currentColor = '#ffffff';
         currentRgb = { r: 255, g: 255, b: 255 };
@@ -92,11 +116,9 @@
             };
             currentColor = '#' + toHex(currentRgb.r) + toHex(currentRgb.g) + toHex(currentRgb.b);
             powered = data.on;
-            brightness = [data.bri];
+            brightness = data.bri;
         } catch {
-            toast.warning('Action Failed', {
-                description: result
-            });
+            console.warn(result);
             return false;
         }
         await sleep(200);
@@ -111,12 +133,11 @@
             host: host
         });
         try {
+            console.log(result);
             infoData = JSON.parse(result);
             deviceName = infoData.name;
         } catch {
-            toast.warning('Action Failed', {
-                description: result
-            });
+            console.warn(result);
         }
         await sleep(200);
         loading = false;
@@ -133,9 +154,7 @@
         } else if (result == 'off') {
             powered = false;
         } else {
-            toast.warning('Action Failed', {
-                description: result
-            });
+            console.warn(result);
         }
         await sleep(200);
         loading = false;
@@ -146,12 +165,10 @@
         loading = true;
         let result: string = await invoke('set_brightness', {
             host: host,
-            brightness: brightness[0]
+            brightness: brightness
         });
         if (result != 'ok') {
-            toast.warning('Action Failed', {
-                description: result
-            });
+            console.warn(result);
         }
         await sleep(200);
         loading = false;
@@ -167,9 +184,7 @@
             b: currentRgb.b
         });
         if (result != 'ok') {
-            toast.warning('Action Failed', {
-                description: result
-            });
+            console.warn(result);
         }
         await sleep(200);
         loading = false;
@@ -181,7 +196,7 @@
     }
 
     async function deviceChange(event: any) {
-        menus.left = false;
+        tabSwitch("light");
         loaderText = '';
         loading = true;
         host = event.detail.host;
@@ -191,7 +206,7 @@
     }
 
     async function tableChange() {
-        menus.left = false;
+        tabSwitch("light");
         loaderText = '';
         loading = true;
         host = '';
@@ -207,59 +222,119 @@
     <Loader text={loaderText} />
 {:else}
     <div transition:fade={{ delay: 0, duration: 150 }} class="flex flex-1 flex-col justify-between items-center">
-        {#if host == ''}
-            <div class="flex flex-row w-full justify-center items-center mt-8">
-                <p class="font-bold text-3xl align-middle">wledTR</p>
-            </div>
+        <div class="flex flex-row w-full justify-center items-center py-8">
+            <p class="font-bold text-3xl align-middle">{host == '' ? 'wledTR' : deviceName}</p>
+        </div>
+        {#if buttons.light}
+            {#if host == ''}
+                <div class="flex h-full w-full justify-center items-center">
+                    <p class="font-bold text-base">Select/Add a Device</p>
+                </div>
+            {:else}
+                <div class="flex flex-1 flex-col justify-center items-center space-y-10">
+                    <Picker
+                        bind:initial={currentColor}
+                        width={Math.max(Math.min(Math.round(screenWidth * 0.66), 450), 100)}
+                        on:color={colorChange}
+                    />
+                    <p class="text-lg font-bold font-mono uppercase" style="color: {currentColor}">{currentColor}</p>
+                    <div class="flex flex-col w-3/4 justify-center items-center space-y-5">
+                        <input
+                            type="range"
+                            id="brightness-slider"
+                            bind:value={brightness}
+                            min="1"
+                            max="255"
+                            step="1"
+                            on:change={() => console.log(brightness)}
+                        />
+                        <label class="font-bold font-mono text-xl" for="brightness-slider"
+                            >{brightness} ({Math.round((brightness * 100) / 255)}%)</label
+                        >
+                    </div>
+                    <div class="flex flex-row justify-center items-center space-x-4">
+                        <button
+                            class="p-4 border-2 rounded-lg active:bg-accent disabled:opacity-50"
+                            on:click={setPower}
+                        >
+                            <img width="48" height="48" src={powered ? FireSolid : FireOutline} alt="" />
+                        </button>
+                        <button
+                            class="p-4 border-2 rounded-lg active:bg-accent disabled:opacity-50"
+                            disabled={!powered}
+                            on:click={() => {
+                                setColor();
+                                setBrightness();
+                            }}
+                            ><img width="48" height="48" src={CheckmarkOutline} alt="" />
+                        </button>
+                    </div>
+                </div>
+            {/if}
+        {:else if buttons.devices}
             <div class="flex h-full w-full justify-center items-center">
-                <p class="font-bold text-base">Select/Add a Device</p>
-            </div>
-            <BottomMenu bind:open={menus.left} title="Lights" name="Add">
                 <DeviceTable on:select={deviceChange} on:change={tableChange} />
-            </BottomMenu>
-        {:else}
-            <div class="flex flex-row w-full justify-center items-center mt-8">
-                <p class="font-bold text-3xl align-middle">{deviceName}</p>
             </div>
-            <div class="flex flex-1 flex-col justify-center items-center space-y-10">
-                <Picker
-                    bind:initial={currentColor}
-                    width={Math.max(Math.min(Math.round(screenWidth * 0.66), 450), 100)}
-                    on:color={colorChange}
-                />
-                <p class="text-lg font-bold font-mono uppercase" style="color: {currentColor}">{currentColor}</p>
-                <div class="flex flex-col w-3/4 justify-center items-center space-y-5">
-                    <Slider id="brightness-slider" bind:value={brightness} max={255} step={1} />
-                    <Label class="font-bold font-mono text-xl" for="brightness-slider"
-                        >{brightness[0]} ({Math.round((brightness[0] * 100) / 255)}%)</Label
-                    >
+        {:else if buttons.settings}
+            {#if host == ''}
+                <div class="flex h-full w-full justify-center items-center">
+                    <p class="font-bold text-base">Select/Add a Device</p>
                 </div>
-                <div class="flex flex-col justify-center items-center space-y-5">
-                    <Switch class="scale-[175%]" id="power-switch" bind:checked={powered} on:click={setPower} />
-                    <Label class="font-bold font-mono text-xl uppercase" for="power-switch"
-                        >{powered ? 'ON' : 'OFF'}</Label
-                    >
-                </div>
-                <Button
-                    style="width: {Math.max(Math.min(Math.round(screenWidth * 0.33), 450), 100)}px"
-                    class="font-bold font-mono h-16 text-2xl border-none uppercase"
-                    size="icon"
-                    variant="outline"
-                    disabled={!powered}
-                    on:click={() => {
-                        setColor();
-                        setBrightness();
-                    }}>Apply</Button
-                >
-            </div>
-            <div class="flex flex-row justify-center space-x-6">
-                <BottomMenu bind:open={menus.left} title="Lights" name="Edit">
-                    <DeviceTable on:select={deviceChange} on:change={tableChange} />
-                </BottomMenu>
-                <SideMenu bind:open={menus.right} side="right" title="Info" name="Info">
+            {:else}
+                <div class="flex h-full w-full justify-center items-center">
                     <InfoTable bind:data={infoData} />
-                </SideMenu>
-            </div>
+                </div>
+            {/if}
         {/if}
+        <div class="flex w-full justify-center min-h-[5.25rem] max-h-[5.25rem] bg-accent">
+            <div class="flex flex-1 flex-row justify-between my-auto">
+                <div>
+                    <button
+                        style="opacity: {buttons.devices ? '100%' : '50%'};"
+                        on:click={() => tabSwitch('devices')}
+                        class="w-14 mx-10"
+                        ><img
+                            width="32"
+                            height="32"
+                            class="mx-auto"
+                            src={buttons.devices ? BookmarkSolid : BookmarkOutline}
+                            alt=""
+                        />
+                        <p>Devices</p></button
+                    >
+                </div>
+                <div>
+                    <button
+                        style="opacity: {buttons.light ? '100%' : '50%'};"
+                        on:click={() => tabSwitch('light')}
+                        class="w-14 mx-2"
+                        ><img
+                            width="32"
+                            height="32"
+                            class="mx-auto"
+                            src={buttons.light ? LightSolid : LightOutline}
+                            alt=""
+                        />
+                        <p>Light</p></button
+                    >
+                </div>
+                <div>
+                    <button
+                        style="opacity: {buttons.settings ? '100%' : '50%'};"
+                        on:click={() => tabSwitch('settings')}
+                        class="w-14 mx-10"
+                    >
+                        <img
+                            width="32"
+                            height="32"
+                            class="mx-auto"
+                            src={buttons.settings ? SettingsSolid : SettingsOutline}
+                            alt=""
+                        />
+                        <p>Info</p>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 {/if}

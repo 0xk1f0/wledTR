@@ -1,6 +1,5 @@
 <script lang="ts">
-    // shadcdn
-    import * as Table from '$lib/components/ui/table';
+    // components
     import Spinner from '$lib/components/app/modules/Spinner.svelte';
     // types
     import type { InfoResponse, WifiData } from '$lib/types/responses';
@@ -24,27 +23,21 @@
         <Spinner text="" />
     </div>
 {:else}
-    <Table.Root>
-        <Table.Header>
-            <Table.Row class="text-left">
-                <Table.Head class="font-bold text-neutral-100">Type</Table.Head>
-                <Table.Head class="font-bold text-neutral-100">Value</Table.Head>
-            </Table.Row>
-        </Table.Header>
-        <Table.Body>
+    <table>
+        <tbody>
             {#each Object.entries(data) as [type, value]}
                 {#if isWifiData(value)}
-                    <Table.Row class="text-left">
-                        <Table.Cell>{type}</Table.Cell>
-                        <Table.Cell>{value.bssid}/{value.channel}/{value.rssi}/{value.signal}</Table.Cell>
-                    </Table.Row>
+                    <tr class="text-left">
+                        <td>{type}</td>
+                        <td>{value.bssid}/{value.channel}/{value.rssi}/{value.signal}</td>
+                    </tr>
                 {:else if !exceptions.includes(type)}
-                    <Table.Row class="text-left">
-                        <Table.Cell>{type}</Table.Cell>
-                        <Table.Cell>{value}</Table.Cell>
-                    </Table.Row>
+                    <tr class="text-left">
+                        <td>{type}</td>
+                        <td>{value}</td>
+                    </tr>
                 {/if}
             {/each}
-        </Table.Body>
-    </Table.Root>
+        </tbody>
+    </table>
 {/if}

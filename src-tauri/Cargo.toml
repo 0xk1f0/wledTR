@@ -1,6 +1,6 @@
 [package]
 name = "wledtr"
-version = "0.1.0"
+version = "0.1.1"
 description = "A cross-platform WLED Controller"
 authors = ["0xk1f0"]
 license = "GPL-3.0-only"

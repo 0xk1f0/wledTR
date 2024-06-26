@@ -1,9 +1,4 @@
 <script lang="ts">
-    // shadcdn
-    import * as Table from '$lib/components/ui/table';
-    import { Checkbox } from '$lib/components/ui/checkbox';
-    import Button from '$lib/components/ui/button/button.svelte';
-    import { toast } from 'svelte-sonner';
     // svelte
     import { onMount, createEventDispatcher } from 'svelte';
     // components
@@ -59,9 +54,7 @@
             host: host
         });
         if (!validIP(result) || result != host) {
-            toast.warning('Action Failed', {
-                description: result
-            });
+            console.warn(result);
             return false;
         }
         await sleep(200);
@@ -99,68 +92,68 @@
 {:else if data.devices.length < 1 && !addingNew}
     <div class="flex flex-col space-y-4 h-full justify-center items-center">
         <p class="m-4">No Devices Found :&lbrace;</p>
-        <Button
-            size="lg"
-            class="text-lg bg-blue-900 text-white"
+        <button
+            class="border-2 rounded-lg p-2 border-blue-900 text-white text-2xl active:bg-accent disabled:opacity-50"
             on:click={() => {
                 addingNew = true;
             }}
-            disabled={addingNew}>Add</Button
+            disabled={addingNew}>Add</button
         >
     </div>
 {:else}
-    <Table.Root>
-        <Table.Body>
-            {#each data.devices as device}
-                <Table.Row>
-                    <Table.Cell class="text-left text-xl" on:click={() => dispatchSelect(device.host)}
-                        >{device.host}</Table.Cell
-                    >
-                    <Table.Cell class="text-center"
-                        ><Checkbox
-                            class="scale-125"
-                            on:click={() => updateCheckedDevices(device)}
-                            checked={checkDevices.has(device)}
-                        /></Table.Cell
-                    >
-                </Table.Row>
-            {/each}
-            {#if addingNew}
-                <Table.Row class="text-left">
-                    <Table.Cell class="text-xl">
-                        <!-- svelte-ignore a11y-autofocus -->
-                        <input
-                            id="newInput"
-                            class="bg-[rgba(0,0,0,0)] border-l-4 border-r-4"
-                            bind:value={newInput}
-                            autofocus
-                        />
-                    </Table.Cell>
-                    <Table.Cell class="text-right"
-                        ><Button
-                            size="sm"
-                            class="w-3 h-3 p-3 m-0 text-xl"
-                            on:click={() => addDevice({ host: newInput, mdns: false })}
-                            disabled={!validIP(newInput)}>+</Button
-                        ></Table.Cell
-                    >
-                </Table.Row>
-            {/if}
-        </Table.Body>
-    </Table.Root>
-    <div class="flex flex-row justify-center items-center space-x-2 my-4">
+    <div class="flex flex-col justify-center items-center space-y-4 my-4">
+        <table>
+            <tbody>
+                {#each data.devices as device}
+                    <tr>
+                        <td class="text-left text-2xl p-2">
+                            <button
+                                class="active:bg-accent disabled:opacity-50"
+                                on:click={() => dispatchSelect(device.host)}
+                            >
+                                {device.host}
+                            </button>
+                            <input
+                                type="checkbox"
+                                class="ml-4 scale-[3.0] -translate-y-[0.2rem] checked:scale-[2.0]"
+                                on:click={() => updateCheckedDevices(device)}
+                                checked={checkDevices.has(device)}
+                            />
+                        </td>
+                    </tr>
+                {/each}
+                {#if addingNew}
+                    <tr class="text-left">
+                        <td class="text-xl">
+                            <!-- svelte-ignore a11y-autofocus -->
+                            <input
+                                id="newInput"
+                                class="bg-[rgba(0,0,0,0)] border-l-4 border-r-4"
+                                bind:value={newInput}
+                                autofocus
+                            />
+                            <button
+                                class="w-3 h-3 p-3 m-0 text-3xl active:bg-accent disabled:opacity-50"
+                                on:click={() => addDevice({ host: newInput, mdns: false })}
+                                disabled={!validIP(newInput)}>+</button
+                            >
+                        </td>
+                    </tr>
+                {/if}
+            </tbody>
+        </table>
         {#if checkDevices.size > 0}
-            <Button size="lg" class="bg-red-800 text-white text-lg" on:click={() => deleteDevices(checkDevices)}
-                >Delete ({checkDevices.size})</Button
+            <button
+                class="border-2 rounded-lg p-2 border-red-800 text-white text-2xl active:bg-accent disabled:opacity-50"
+                on:click={() => deleteDevices(checkDevices)}>Delete ({checkDevices.size})</button
             >
         {:else}
-            <Button
-                size="lg"
-                class="text-lg bg-blue-900 text-white"
+            <button
+                class="border-2 rounded-lg p-2 border-blue-900 text-white text-2xl active:bg-accent disabled:opacity-50"
                 on:click={() => {
                     addingNew = true;
                 }}
-                disabled={addingNew}>Add</Button
+                disabled={addingNew}>Add</button
             >
         {/if}
     </div>
