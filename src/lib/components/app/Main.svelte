@@ -39,8 +39,8 @@
     let infoData: InfoResponse;
     let storage: StorageHandler = new StorageHandler('devices.conf');
     let data: StoreData = { devices: [] };
-    let buttons = {
-        settings: false,
+    let tab = {
+        info: false,
         light: true,
         devices: false
     };
@@ -68,21 +68,21 @@
 
     function tabSwitch(type: string) {
         // reset all
-        buttons = {
-            settings: false,
+        tab = {
+            info: false,
             light: false,
             devices: false
         };
         // then eval
         switch (type) {
-            case 'settings':
-                buttons.settings = true;
+            case 'info':
+                tab.info = true;
                 break;
             case 'light':
-                buttons.light = true;
+                tab.light = true;
                 break;
             case 'devices':
-                buttons.devices = true;
+                tab.devices = true;
                 break;
         }
     }
@@ -196,7 +196,7 @@
     }
 
     async function deviceChange(event: any) {
-        tabSwitch("light");
+        tabSwitch('light');
         loaderText = '';
         loading = true;
         host = event.detail.host;
@@ -206,7 +206,7 @@
     }
 
     async function tableChange() {
-        tabSwitch("light");
+        tabSwitch('light');
         loaderText = '';
         loading = true;
         host = '';
@@ -222,45 +222,53 @@
     <Loader text={loaderText} />
 {:else}
     <div transition:fade={{ delay: 0, duration: 150 }} class="flex flex-1 flex-col justify-between items-center">
-        <div class="flex flex-row w-full justify-center items-center py-8">
-            <p class="font-bold text-3xl align-middle">{host == '' ? 'wledTR' : deviceName}</p>
-        </div>
-        {#if buttons.light}
+        {#if tab.light}
             {#if host == ''}
                 <div class="flex h-full w-full justify-center items-center">
                     <p class="font-bold text-base">Select/Add a Device</p>
                 </div>
             {:else}
+                <div class="flex flex-row w-full justify-center items-center py-8">
+                    <p class="font-bold text-3xl align-middle">{host == '' ? 'wledTR' : deviceName}</p>
+                </div>
                 <div class="flex flex-1 flex-col justify-center items-center space-y-10">
                     <Picker
                         bind:initial={currentColor}
                         width={Math.max(Math.min(Math.round(screenWidth * 0.66), 450), 100)}
                         on:color={colorChange}
                     />
-                    <p class="text-lg font-bold font-mono uppercase" style="color: {currentColor}">{currentColor}</p>
-                    <div class="flex flex-col w-3/4 justify-center items-center space-y-5">
-                        <input
-                            type="range"
-                            id="brightness-slider"
-                            bind:value={brightness}
-                            min="1"
-                            max="255"
-                            step="1"
-                            on:change={() => console.log(brightness)}
-                        />
-                        <label class="font-bold font-mono text-xl" for="brightness-slider"
-                            >{brightness} ({Math.round((brightness * 100) / 255)}%)</label
+                    <div
+                        class="bg-blue-300 bg-opacity-25 flex flex-col w-3/4 justify-center items-center space-y-5 rounded-full py-4"
+                    >
+                        <p class="rounded-full text-2xl font-bold font-mono uppercase" style="color: {currentColor}">
+                            {currentColor}
+                        </p>
+                        <div class="w-3/4">
+                            <input
+                                type="range"
+                                id="brightness-slider"
+                                class="w-full"
+                                bind:value={brightness}
+                                min="1"
+                                max="255"
+                                step="1"
+                                on:change={() => console.log(brightness)}
+                            />
+                        </div>
+
+                        <label class="font-bold font-mono text-2xl" for="brightness-slider"
+                            >{Math.round((brightness * 100) / 255)}%</label
                         >
                     </div>
                     <div class="flex flex-row justify-center items-center space-x-4">
                         <button
-                            class="p-4 border-2 rounded-lg active:bg-accent disabled:opacity-50"
+                            class="p-4 bg-blue-300 bg-opacity-30 rounded-full active:bg-accent disabled:opacity-50"
                             on:click={setPower}
                         >
                             <img width="48" height="48" src={powered ? FireSolid : FireOutline} alt="" />
                         </button>
                         <button
-                            class="p-4 border-2 rounded-lg active:bg-accent disabled:opacity-50"
+                            class="p-4 bg-blue-300 bg-opacity-30 rounded-full active:bg-accent disabled:opacity-50"
                             disabled={!powered}
                             on:click={() => {
                                 setColor();
@@ -271,11 +279,11 @@
                     </div>
                 </div>
             {/if}
-        {:else if buttons.devices}
+        {:else if tab.devices}
             <div class="flex h-full w-full justify-center items-center">
                 <DeviceTable on:select={deviceChange} on:change={tableChange} />
             </div>
-        {:else if buttons.settings}
+        {:else if tab.info}
             {#if host == ''}
                 <div class="flex h-full w-full justify-center items-center">
                     <p class="font-bold text-base">Select/Add a Device</p>
@@ -286,51 +294,56 @@
                 </div>
             {/if}
         {/if}
-        <div class="flex w-full justify-center min-h-[5.25rem] max-h-[5.25rem] bg-accent">
+        <div class="flex w-full justify-center min-h-[5.25rem] max-h-[5.25rem] bg-slate-900">
             <div class="flex flex-1 flex-row justify-between my-auto">
                 <div>
                     <button
-                        style="opacity: {buttons.devices ? '100%' : '50%'};"
+                        style="opacity: {tab.devices ? '100%' : '50%'};"
                         on:click={() => tabSwitch('devices')}
                         class="w-14 mx-10"
-                        ><img
-                            width="32"
-                            height="32"
-                            class="mx-auto"
-                            src={buttons.devices ? BookmarkSolid : BookmarkOutline}
-                            alt=""
-                        />
+                        ><div class="bg-opacity-50 rounded-full p-1 {tab.devices ? 'bg-blue-300' : 'bg-transparent'}">
+                            <img
+                                width="24"
+                                height="24"
+                                class="mx-auto"
+                                src={tab.devices ? BookmarkSolid : BookmarkOutline}
+                                alt=""
+                            />
+                        </div>
                         <p>Devices</p></button
                     >
                 </div>
                 <div>
                     <button
-                        style="opacity: {buttons.light ? '100%' : '50%'};"
+                        style="opacity: {tab.light ? '100%' : '50%'};"
                         on:click={() => tabSwitch('light')}
                         class="w-14 mx-2"
-                        ><img
-                            width="32"
-                            height="32"
-                            class="mx-auto"
-                            src={buttons.light ? LightSolid : LightOutline}
-                            alt=""
-                        />
+                        ><div class="bg-opacity-50 rounded-full p-1 {tab.light ? 'bg-blue-300' : 'bg-transparent'}">
+                            <img
+                                width="24"
+                                height="24"
+                                class="mx-auto"
+                                src={tab.light ? LightSolid : LightOutline}
+                                alt=""
+                            />
+                        </div>
                         <p>Light</p></button
                     >
                 </div>
                 <div>
                     <button
-                        style="opacity: {buttons.settings ? '100%' : '50%'};"
-                        on:click={() => tabSwitch('settings')}
+                        style="opacity: {tab.info ? '100%' : '50%'};"
+                        on:click={() => tabSwitch('info')}
                         class="w-14 mx-10"
-                    >
-                        <img
-                            width="32"
-                            height="32"
-                            class="mx-auto"
-                            src={buttons.settings ? SettingsSolid : SettingsOutline}
-                            alt=""
-                        />
+                        ><div class="bg-opacity-50 rounded-full p-1 {tab.info ? 'bg-blue-300' : 'bg-transparent'}">
+                            <img
+                                width="24"
+                                height="24"
+                                class="mx-auto"
+                                src={tab.info ? SettingsSolid : SettingsOutline}
+                                alt=""
+                            />
+                        </div>
                         <p>Info</p>
                     </button>
                 </div>

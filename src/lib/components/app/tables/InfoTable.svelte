@@ -23,21 +23,23 @@
         <Spinner text="" />
     </div>
 {:else}
-    <table>
-        <tbody>
-            {#each Object.entries(data) as [type, value]}
-                {#if isWifiData(value)}
-                    <tr class="text-left">
-                        <td>{type}</td>
-                        <td>{value.bssid}/{value.channel}/{value.rssi}/{value.signal}</td>
-                    </tr>
-                {:else if !exceptions.includes(type)}
-                    <tr class="text-left">
-                        <td>{type}</td>
-                        <td>{value}</td>
-                    </tr>
-                {/if}
-            {/each}
-        </tbody>
-    </table>
+    <div class="bg-blue-300 bg-opacity-25 p-4 rounded-xl">
+        <table>
+            <tbody>
+                {#each Object.entries(data) as [type, value]}
+                    {#if isWifiData(value)}
+                        <tr class="text-left">
+                            <td>{type}</td>
+                            <td>{value.bssid}/{value.channel}/{value.rssi}/{value.signal}</td>
+                        </tr>
+                    {:else if !exceptions.includes(type)}
+                        <tr class="text-left">
+                            <td>{type}</td>
+                            <td>{value}</td>
+                        </tr>
+                    {/if}
+                {/each}
+            </tbody>
+        </table>
+    </div>
 {/if}

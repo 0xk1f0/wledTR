@@ -23,7 +23,7 @@
         let colorPicker: any = new (iro as any).ColorPicker('#picker', {
             width: width,
             color: initial,
-            borderWidth: 2,
+            borderWidth: 0,
             layout: [
                 {
                     component: iro.ui.Wheel
