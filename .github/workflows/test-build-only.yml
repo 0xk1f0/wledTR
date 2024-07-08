@@ -63,16 +63,16 @@ jobs:
           sudo apt-get install -y android-sdk sdkmanager openjdk-17-jdk curl wget build-essential libssl-dev libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev libwebkit2gtk-4.1-dev librsvg2-dev patchelf
       - name: install android sdks
         run: |
-          sdkmanager --install "build-tools;30.0.3"
-          sdkmanager --install "platforms;android-33"
-          sdkmanager --install "ndk;25.2.9519653"
+          sdkmanager --install "build-tools;34.0.0"
+          sdkmanager --install "platforms;android-34"
+          sdkmanager --install "ndk;26.3.11579264"
           sdkmanager --install "emulator"
       - name: install, setup and build
         run: |
           npm install
-          ANDROID_HOME="/usr/local/lib/android/sdk/" NDK_HOME="/usr/local/lib/android/sdk/ndk/25.2.9519653" JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64" npm run tauri android init
+          ANDROID_HOME="/usr/local/lib/android/sdk/" NDK_HOME="/usr/local/lib/android/sdk/ndk/26.3.11579264" JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64" npm run tauri android init
           npm run tauri icon ./src-tauri/icons/logo.png
-          ANDROID_HOME="/usr/local/lib/android/sdk/" NDK_HOME="/usr/local/lib/android/sdk/ndk/25.2.9519653" JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64" npm run tauri android build
+          ANDROID_HOME="/usr/local/lib/android/sdk/" NDK_HOME="/usr/local/lib/android/sdk/ndk/26.3.11579264" JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64" npm run tauri android build
       - name: Sign APK
         env:
           APK_SIGNING_KEY: ${{ secrets.APK_SIGNING_KEY }}
@@ -80,7 +80,7 @@ jobs:
         run: |
           RELEASE_APK_PATH="src-tauri/gen/android/app/build/outputs/apk/universal/release"
           echo $APK_SIGNING_KEY | base64 -di > ./keystore.jks
-          echo $APK_SIGNING_PASSWORD | /usr/local/lib/android/sdk/build-tools/30.0.3/apksigner sign --ks keystore.jks ${RELEASE_APK_PATH}/app-universal-release-unsigned.apk
+          echo $APK_SIGNING_PASSWORD | /usr/local/lib/android/sdk/build-tools/34.0.0/apksigner sign --ks keystore.jks ${RELEASE_APK_PATH}/app-universal-release-unsigned.apk
           mv ${RELEASE_APK_PATH}/app-universal-release-unsigned.apk ${RELEASE_APK_PATH}/app-universal-release.apk
       - name: Upload APK
         uses: actions/upload-artifact@v4

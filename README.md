@@ -51,9 +51,9 @@ This project uses a fixed set of libraries, make sure to install the following:
 
 ```bash
 # using the sdkmanager utlitity
-sdkmanager --install "build-tools;30.0.3"
-sdkmanager --install "platforms;android-33"
-sdkmanager --install "ndk;25.2.9519653"
+sdkmanager --install "build-tools;34.0.0"
+sdkmanager --install "platforms;android-34"
+sdkmanager --install "ndk;26.3.11579264"
 sdkmanager --install "emulator"
 ```
 
