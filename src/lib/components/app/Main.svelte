@@ -7,7 +7,7 @@
     // svelte
     import { fade } from 'svelte/transition';
     import { onMount } from 'svelte';
-    import { getCurrent } from '@tauri-apps/api/window';
+    import { getCurrentWindow } from '@tauri-apps/api/window';
     // tauri
     import { invoke } from '@tauri-apps/api/core';
     // types
@@ -46,7 +46,7 @@
     };
 
     onMount(async () => {
-        await getCurrent().onResized(async () => {
+        await getCurrentWindow().onResized(async () => {
             if (screenWidth != window.innerWidth || screenHeight != window.innerHeight) {
                 loaderText = 'Loading';
                 loading = true;
