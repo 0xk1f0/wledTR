@@ -96,7 +96,7 @@
         <Spinner text="" />
     </div>
 {:else if data.devices.length < 1 && !addingNew}
-    <div class="flex flex-col space-y-4 h-full justify-center items-center">
+    <div class="flex flex-col space-y-4 justify-center items-center h-[calc(100vh-8rem)] overflow-scroll">
         <p class="m-4">No Devices Found :&lbrace;</p>
         <button
             class="rounded-full px-7 py-2 bg-blue-400 bg-opacity-75 text-white text-xl active:bg-accent disabled:opacity-50"
@@ -107,14 +107,14 @@
         >
     </div>
 {:else}
-    <div class="flex flex-col justify-center items-center space-y-4">
+    <div class="flex flex-col justify-center items-center space-y-4 h-[calc(100vh-8rem)] overflow-scroll">
         <table>
             <tbody>
                 {#each data.devices as device}
                     <tr>
                         <td class="text-2xl">
                             <div
-                                class="flex flex-row space-x-2 justify-center bg-blue-300 bg-opacity-20 pl-3 rounded-full my-1"
+                                class="flex flex-row space-x-2 justify-center bg-blue-800 bg-opacity-25 pl-3 rounded-full my-1"
                             >
                                 <button
                                     class="active:bg-accent disabled:opacity-50 rounded-full"
@@ -124,7 +124,7 @@
                                 </button>
                                 <button
                                     class="{checkDevices.has(device)
-                                        ? 'bg-red-500'
+                                        ? 'bg-red-800'
                                         : 'bg-transparent'} text-2xl p-2 rounded-full"
                                     on:click={() => updateCheckedDevices(device)}
                                     ><img
@@ -155,12 +155,12 @@
         </table>
         {#if checkDevices.size > 0}
             <button
-                class="rounded-full px-7 py-2 bg-red-500 bg-opacity-75 text-white text-xl active:bg-accent disabled:opacity-50"
+                class="rounded-full px-7 py-2 bg-red-800 bg-opacity-75 text-white text-xl active:bg-accent disabled:opacity-50"
                 on:click={() => deleteDevices(checkDevices)}>Delete ({checkDevices.size})</button
             >
         {:else}
             <button
-                class="rounded-full px-7 py-2 bg-blue-400 bg-opacity-75 text-white text-xl active:bg-accent disabled:opacity-50"
+                class="rounded-full px-7 py-2 bg-blue-600 bg-opacity-50 text-white text-xl active:bg-accent disabled:opacity-50"
                 on:click={() => {
                     if (addingNew && validIP(newInput)) {
                         addDevice({ host: newInput, mdns: false });

@@ -1,18 +1,26 @@
 <!doctype html>
 <html class="dark" lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		%sveltekit.head%
-	</head>
-	<body class="m-0 p-0 min-h-screen h-screen flex flex-col font-system-ui" data-sveltekit-preload-data="hover">
-		<div style="display: contents">%sveltekit.body%</div>
-	</body>
-	<style>
-		*,
-		*::before,
-		*::after {
-			box-sizing: border-box;
-		}
-	</style>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        %sveltekit.head%
+    </head>
+    <body class="m-0 p-0 min-h-screen h-screen flex flex-col font-system-ui" data-sveltekit-preload-data="hover">
+        <div style="display: contents">%sveltekit.body%</div>
+    </body>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            overflow: hidden;
+        }
+
+        body {
+            overflow: hidden;
+        }
+    </style>
 </html>

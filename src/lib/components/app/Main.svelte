@@ -237,7 +237,7 @@
                         on:color={colorChange}
                     />
                     <div
-                        class="bg-blue-300 bg-opacity-25 flex flex-col w-3/4 justify-center items-center space-y-5 rounded-full py-4"
+                        class="flex flex-col w-3/4 justify-center items-center space-y-5 rounded-full py-4"
                     >
                         <p class="rounded-full text-2xl font-bold font-mono uppercase" style="color: {currentColor}">
                             {currentColor}
@@ -246,27 +246,26 @@
                             <input
                                 type="range"
                                 id="brightness-slider"
-                                class="w-full"
+                                class="w-full h-2 bg-blue-800 bg-opacity-50 rounded-full appearance-none"
                                 bind:value={brightness}
                                 min="1"
                                 max="255"
                                 step="1"
                             />
                         </div>
-
                         <label class="font-bold font-mono text-2xl" for="brightness-slider"
                             >{Math.round((brightness * 100) / 255)}%</label
                         >
                     </div>
                     <div class="flex flex-row justify-center items-center space-x-4">
                         <button
-                            class="p-4 bg-blue-300 bg-opacity-30 rounded-full active:bg-accent disabled:opacity-50"
+                            class="p-4 bg-blue-600 bg-opacity-25 rounded-full active:bg-accent disabled:opacity-50"
                             on:click={setPower}
                         >
                             <img width="48" height="48" src={powered ? FireSolid : FireOutline} alt="" />
                         </button>
                         <button
-                            class="p-4 bg-blue-300 bg-opacity-30 rounded-full active:bg-accent disabled:opacity-50"
+                            class="p-4 bg-blue-600 bg-opacity-25 rounded-full active:bg-accent disabled:opacity-50"
                             disabled={!powered}
                             on:click={() => {
                                 setColor();
@@ -278,18 +277,14 @@
                 </div>
             {/if}
         {:else if tab.devices}
-            <div class="flex h-full w-full justify-center items-center">
-                <DeviceTable on:select={deviceChange} on:change={tableChange} />
-            </div>
+            <DeviceTable on:select={deviceChange} on:change={tableChange} />
         {:else if tab.info}
             {#if host == ''}
-                <div class="flex h-full w-full justify-center items-center">
+                <div class="flex w-full justify-center items-center h-[calc(100vh-8rem)]">
                     <p class="font-bold text-base">Select/Add a Device</p>
                 </div>
             {:else}
-                <div class="flex h-full w-full justify-center items-center">
-                    <InfoTable bind:data={infoData} />
-                </div>
+                <InfoTable bind:data={infoData} />
             {/if}
         {/if}
         <div class="flex w-full justify-center min-h-[5.25rem] max-h-[5.25rem] bg-slate-900">
@@ -299,7 +294,7 @@
                         style="opacity: {tab.devices ? '100%' : '50%'};"
                         on:click={() => tabSwitch('devices')}
                         class="w-14 mx-10"
-                        ><div class="bg-opacity-50 rounded-full p-1 {tab.devices ? 'bg-blue-300' : 'bg-transparent'}">
+                        ><div class="bg-opacity-50 rounded-full p-1 {tab.devices ? 'bg-blue-600' : 'bg-transparent'}">
                             <img
                                 width="24"
                                 height="24"
@@ -316,7 +311,7 @@
                         style="opacity: {tab.light ? '100%' : '50%'};"
                         on:click={() => tabSwitch('light')}
                         class="w-14 mx-2"
-                        ><div class="bg-opacity-50 rounded-full p-1 {tab.light ? 'bg-blue-300' : 'bg-transparent'}">
+                        ><div class="bg-opacity-50 rounded-full p-1 {tab.light ? 'bg-blue-600' : 'bg-transparent'}">
                             <img
                                 width="24"
                                 height="24"
@@ -333,7 +328,7 @@
                         style="opacity: {tab.info ? '100%' : '50%'};"
                         on:click={() => tabSwitch('info')}
                         class="w-14 mx-10"
-                        ><div class="bg-opacity-50 rounded-full p-1 {tab.info ? 'bg-blue-300' : 'bg-transparent'}">
+                        ><div class="bg-opacity-50 rounded-full p-1 {tab.info ? 'bg-blue-600' : 'bg-transparent'}">
                             <img
                                 width="24"
                                 height="24"
