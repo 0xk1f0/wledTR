@@ -133,7 +133,6 @@
             host: host
         });
         try {
-            console.log(result);
             infoData = JSON.parse(result);
             deviceName = infoData.name;
         } catch {
@@ -252,7 +251,6 @@
                                 min="1"
                                 max="255"
                                 step="1"
-                                on:change={() => console.log(brightness)}
                             />
                         </div>
 
