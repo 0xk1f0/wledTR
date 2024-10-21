@@ -1,5 +1,4 @@
-import { createStore } from '@tauri-apps/plugin-store';
-import type { Store } from '@tauri-apps/plugin-store';
+import { Store } from '@tauri-apps/plugin-store';
 import type { Device, StoreData } from '$lib/types/store';
 
 class StorageHandler {
@@ -11,7 +10,7 @@ class StorageHandler {
 
     private async load(store: Promise<Store>): Promise<StoreData> {
         let query = await (await store).get<StoreData>('config');
-        if (query === null) {
+        if (!query) {
             query = { devices: [] };
         }
         return query;
@@ -88,7 +87,7 @@ class StorageHandler {
     }
 
     public open() {
-        let store = createStore(this.#path);
+        let store = Store.load(this.#path);
         return {
             load: () => {
                 return this.load(store);
