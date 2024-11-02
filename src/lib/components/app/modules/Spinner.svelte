@@ -22,7 +22,7 @@
 -->
 
 <script lang="ts">
-    export let text: string = '';
+    let { text = '' }: { text: string } = $props();
 </script>
 
 <div class="flex flex-col justify-center text-center">

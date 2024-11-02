@@ -4,9 +4,9 @@
     // types
     import type { InfoResponse, WifiData } from '$lib/types/responses';
 
-    export let data: InfoResponse;
+    let { data = $bindable() }: { data: InfoResponse } = $props();
 
-    let exceptions = ['leds', 'fs', 'maps', 'lm', 'lip'];
+    let exceptions = ['leds', 'fs', 'maps', 'lm', 'lip', 'u', 'brand', 'product'];
 
     function isWifiData(obj: any): obj is WifiData {
         return (

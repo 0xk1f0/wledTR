@@ -16,15 +16,14 @@
     const dispatch = createEventDispatcher();
     let loading = false;
     let addingNew: boolean = false;
-    let validAddress: boolean = false;
     let newInput: string = '';
     let checkDevices: Set<Device> = new Set();
     let data: StoreData = { devices: [] };
     let storage: StorageHandler = new StorageHandler('devices.conf');
 
     onMount(async () => {
-        data = await storage.open().load();
         loading = true;
+        data = await storage.open().load();
         loading = false;
     });
 
@@ -46,7 +45,6 @@
 
     function validIP(input: string): boolean {
         const RES = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/.test(input);
-        validAddress = RES;
         return RES;
     }
 
@@ -100,7 +98,7 @@
         <p class="m-4">No Devices Found :&lbrace;</p>
         <button
             class="rounded-full px-7 py-2 bg-blue-400 bg-opacity-75 text-white text-xl active:bg-accent disabled:opacity-50"
-            on:click={() => {
+            onclick={() => {
                 addingNew = true;
             }}
             disabled={addingNew}>Add</button
@@ -118,7 +116,7 @@
                             >
                                 <button
                                     class="active:bg-accent disabled:opacity-50 rounded-full"
-                                    on:click={() => dispatchSelect(device.host)}
+                                    onclick={() => dispatchSelect(device.host)}
                                 >
                                     {device.host}
                                 </button>
@@ -126,7 +124,7 @@
                                     class="{checkDevices.has(device)
                                         ? 'bg-red-800'
                                         : 'bg-transparent'} text-2xl p-2 rounded-full"
-                                    on:click={() => updateCheckedDevices(device)}
+                                    onclick={() => updateCheckedDevices(device)}
                                     ><img
                                         width="28"
                                         height="28"
@@ -156,12 +154,12 @@
         {#if checkDevices.size > 0}
             <button
                 class="rounded-full px-7 py-2 bg-red-800 bg-opacity-75 text-white text-xl active:bg-accent disabled:opacity-50"
-                on:click={() => deleteDevices(checkDevices)}>Delete ({checkDevices.size})</button
+                onclick={() => deleteDevices(checkDevices)}>Delete ({checkDevices.size})</button
             >
         {:else}
             <button
                 class="rounded-full px-7 py-2 bg-blue-600 bg-opacity-50 text-white text-xl active:bg-accent disabled:opacity-50"
-                on:click={() => {
+                onclick={() => {
                     if (addingNew && validIP(newInput)) {
                         addDevice({ host: newInput, mdns: false });
                         addingNew = false;

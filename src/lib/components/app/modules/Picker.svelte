@@ -7,8 +7,7 @@
     import iro from '@jaames/iro';
     import { onMount, createEventDispatcher } from 'svelte';
 
-    export let width: number = 250;
-    export let initial: string = '#ffffff';
+    let { width = 250, initial = $bindable('#ffffff') }: { width: number; initial: string } = $props();
 
     const dispatch = createEventDispatcher();
 

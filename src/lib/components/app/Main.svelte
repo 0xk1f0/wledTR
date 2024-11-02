@@ -260,14 +260,14 @@
                     <div class="flex flex-row justify-center items-center space-x-4">
                         <button
                             class="p-4 bg-blue-600 bg-opacity-25 rounded-full active:bg-accent disabled:opacity-50"
-                            on:click={setPower}
+                            onclick={setPower}
                         >
                             <img width="48" height="48" src={powered ? FireSolid : FireOutline} alt="" />
                         </button>
                         <button
                             class="p-4 bg-blue-600 bg-opacity-25 rounded-full active:bg-accent disabled:opacity-50"
                             disabled={!powered}
-                            on:click={() => {
+                            onclick={() => {
                                 setColor();
                                 setBrightness();
                             }}
@@ -287,12 +287,12 @@
                 <InfoTable bind:data={infoData} />
             {/if}
         {/if}
-        <div class="flex w-full justify-center min-h-[5.25rem] max-h-[5.25rem] bg-slate-900">
+        <div class="flex w-full justify-center min-h-[5.25rem] max-h-[5.25rem] bg-blue-500 bg-opacity-5">
             <div class="flex flex-1 flex-row justify-between my-auto">
                 <div>
                     <button
                         style="opacity: {tab.devices ? '100%' : '50%'};"
-                        on:click={() => tabSwitch('devices')}
+                        onclick={() => tabSwitch('devices')}
                         class="w-14 mx-10"
                         ><div class="bg-opacity-50 rounded-full p-1 {tab.devices ? 'bg-blue-600' : 'bg-transparent'}">
                             <img
@@ -309,7 +309,7 @@
                 <div>
                     <button
                         style="opacity: {tab.light ? '100%' : '50%'};"
-                        on:click={() => tabSwitch('light')}
+                        onclick={() => tabSwitch('light')}
                         class="w-14 mx-2"
                         ><div class="bg-opacity-50 rounded-full p-1 {tab.light ? 'bg-blue-600' : 'bg-transparent'}">
                             <img
@@ -326,7 +326,7 @@
                 <div>
                     <button
                         style="opacity: {tab.info ? '100%' : '50%'};"
-                        on:click={() => tabSwitch('info')}
+                        onclick={() => tabSwitch('info')}
                         class="w-14 mx-10"
                         ><div class="bg-opacity-50 rounded-full p-1 {tab.info ? 'bg-blue-600' : 'bg-transparent'}">
                             <img

@@ -2,7 +2,7 @@
     import { fade } from 'svelte/transition';
     import Spinner from '$lib/components/app/modules/Spinner.svelte';
 
-    export let text: string = '';
+    let { text = '' }: { text: string } = $props();
 </script>
 
 <div transition:fade={{ delay: 0, duration: 600 }}>
