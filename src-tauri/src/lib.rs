@@ -7,6 +7,7 @@ use wled::WLEDController;
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_store::Builder::default().build())
+        .plugin(tauri_plugin_m3::init())
         .invoke_handler(tauri::generate_handler![
             power_toggle,
             set_color,

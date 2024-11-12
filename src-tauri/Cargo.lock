@@ -3406,6 +3406,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tauri-plugin-m3"
+version = "0.1.0"
+source = "git+https://github.com/0xk1f0/tauri-plugin-m3#4faddfc4b6115dc66e07f31dd943d60693feaf8d"
+dependencies = [
+ "serde",
+ "tauri",
+ "tauri-plugin",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "tauri-plugin-store"
 version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4533,6 +4544,7 @@ dependencies = [
  "serde_json",
  "tauri",
  "tauri-build",
+ "tauri-plugin-m3",
  "tauri-plugin-store",
 ]
 
