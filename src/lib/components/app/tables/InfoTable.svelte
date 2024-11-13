@@ -23,7 +23,7 @@
         <Spinner text="" />
     </div>
 {:else}
-    <div class="m-auto bg-surfaceVariant text-onSurfaceVariant rounded-lg max-h-[calc(100vh-10rem)] overflow-scroll">
+    <div class="m-auto bg-surfaceVariant text-onSurfaceVariant rounded-lg max-h-[calc(100vh-12rem)] overflow-scroll">
         <table class="my-2 mx-3">
             <tbody>
                 {#each Object.entries(data) as [type, value]}
