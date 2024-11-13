@@ -94,7 +94,7 @@
         <Spinner text="" />
     </div>
 {:else if data.devices.length < 1 && !addingNew}
-    <div class="flex flex-col space-y-4 justify-center items-center h-[calc(100vh-8rem-4vh)] overflow-scroll">
+    <div class="m-auto flex flex-col space-y-4 justify-center items-center max-h-[calc(100vh-10rem)] overflow-scroll">
         <p class="m-4 font-bold text-base text-onBackground">No Devices Found</p>
         <button
             class="rounded-full px-7 py-2 bg-primary text-onPrimary text-xl active:bg-accent disabled:opacity-50"
@@ -105,14 +105,14 @@
         >
     </div>
 {:else}
-    <div class="flex flex-col justify-center items-center space-y-4 h-[calc(100vh-8rem)] overflow-scroll">
+    <div class="m-auto flex flex-col justify-center items-center space-y-4 max-h-[calc(100vh-10rem)] overflow-scroll">
         <table>
             <tbody>
                 {#each data.devices as device}
                     <tr>
                         <td class="text-2xl">
                             <div
-                                class="flex flex-row space-x-2 justify-center bg-primaryContainer text-onPrimaryContainer pl-3 rounded-full my-1"
+                                class="flex flex-row space-x-2 justify-center bg-surfaceVariant text-onSurfaceVariant pl-3 rounded-full my-1"
                             >
                                 <button
                                     class="active:bg-accent disabled:opacity-50 rounded-full"

@@ -28,10 +28,10 @@
     import FireSolid from '$lib/assets/fire-solid.svg';
 
     let host = '';
-    let loading = false;
+    let loading = true;
     let powered = false;
     let brightness: number = 0;
-    let loaderText = 'Loading';
+    let loaderText = '';
     let deviceName: string = 'Unknown';
     let currentColor: string = '#ffffff';
     let currentRgb: { r: number; g: number; b: number } = { r: 255, g: 255, b: 255 };
@@ -54,9 +54,8 @@
             .catch();
         await getCurrentWindow().onResized(async () => {
             if (screenWidth != window.innerWidth || screenHeight != window.innerHeight) {
-                loaderText = 'Loading';
                 loading = true;
-                await sleep(500);
+                await sleep(200);
                 screenWidth = window.innerWidth;
                 screenHeight = window.innerHeight;
                 loading = false;
@@ -65,6 +64,7 @@
         data = await storage.open().load();
         if (data.devices.length > 0) host = data.devices[0].host;
         if (host != '') await refresh();
+        loading = false;
     });
 
     function toHex(c: number) {
@@ -108,7 +108,6 @@
     }
 
     async function getState(): Promise<boolean> {
-        loaderText = '';
         loading = true;
         let result: string = await invoke('get_state', {
             host: host
@@ -133,7 +132,6 @@
     }
 
     async function getInfo() {
-        loaderText = '';
         loading = true;
         let result: string = await invoke('get_info', {
             host: host
@@ -149,7 +147,6 @@
     }
 
     async function setPower() {
-        loaderText = '';
         loading = true;
         let result: string = await invoke('power_toggle', {
             host: host
@@ -166,7 +163,6 @@
     }
 
     async function setBrightness() {
-        loaderText = '';
         loading = true;
         let result: string = await invoke('set_brightness', {
             host: host,
@@ -202,7 +198,6 @@
 
     async function deviceChange(event: any) {
         tabSwitch('light');
-        loaderText = '';
         loading = true;
         host = event.detail.host;
         await refresh();
@@ -212,7 +207,6 @@
 
     async function tableChange() {
         tabSwitch('light');
-        loaderText = '';
         loading = true;
         host = '';
         data = await storage.open().load();
@@ -236,37 +230,31 @@
                     <p class="font-bold text-base text-onBackground">Select/Add a Device</p>
                 </div>
             {:else}
-                <div class="flex flex-row w-full justify-center items-center mt-[3vh]">
-                    <p class="font-bold text-3xl align-middle text-onBackground">
-                        {host == '' ? 'wledTR' : deviceName}
-                    </p>
-                </div>
                 <div class="flex flex-1 flex-col justify-center items-center space-y-10">
+                    <div class="flex flex-row w-full justify-center items-center">
+                        <p class="font-bold italic text-3xl align-middle text-primary">
+                            {host == '' ? 'wledTR' : deviceName}
+                        </p>
+                    </div>
                     <Picker
                         bind:initial={currentColor}
                         width={Math.max(Math.min(Math.round(screenWidth * 0.66), 450), 100)}
                         on:color={colorChange}
                     />
-                    <div class="flex flex-col w-3/4 justify-center items-center space-y-5 rounded-full py-4">
-                        <p class="rounded-full text-2xl font-bold font-mono uppercase" style="color: {currentColor}">
-                            {currentColor}
-                        </p>
-                        <div class="w-3/4">
+                    <div class="flex flex-col w-2/3 justify-center items-center space-y-5 rounded-full py-4">
+                        <div class="w-[80%]">
                             <input
                                 type="range"
                                 id="brightness-slider"
-                                class="w-full h-2 bg-primary rounded-full appearance-none"
+                                class="w-full h-6 bg-primary rounded-full appearance-none"
                                 bind:value={brightness}
                                 min="1"
                                 max="255"
                                 step="1"
                             />
                         </div>
-                        <label class="font-bold font-mono text-2xl text-onBackground" for="brightness-slider"
-                            >{Math.round((brightness * 100) / 255)}%</label
-                        >
                     </div>
-                    <div class="flex flex-row justify-center items-center space-x-4">
+                    <div class="flex flex-row justify-center items-center space-x-6">
                         <button
                             class="p-4 bg-primary rounded-full active:bg-accent disabled:opacity-50"
                             onclick={setPower}
@@ -296,7 +284,7 @@
                 <InfoTable bind:data={infoData} />
             {/if}
         {/if}
-        <div class="flex w-full justify-center min-h-[6.5rem] max-h-[6.5rem] bg-primaryContainer">
+        <div class="flex w-full justify-center min-h-[6.5rem] max-h-[6.5rem] bg-surfaceVariant">
             <div class="flex flex-1 flex-row justify-between my-auto">
                 <div>
                     <button
@@ -312,7 +300,7 @@
                                 alt=""
                             />
                         </div>
-                        <p class="text-onPrimaryContainer">Devices</p></button
+                        <p class="text-onSurfaceVariant">Devices</p></button
                     >
                 </div>
                 <div>
@@ -329,7 +317,7 @@
                                 alt=""
                             />
                         </div>
-                        <p class="text-onPrimaryContainer">Light</p></button
+                        <p class="text-onSurfaceVariant">Light</p></button
                     >
                 </div>
                 <div>
@@ -346,7 +334,7 @@
                                 alt=""
                             />
                         </div>
-                        <p class="text-onPrimaryContainer">Info</p>
+                        <p class="text-onSurfaceVariant">Info</p>
                     </button>
                 </div>
             </div>
