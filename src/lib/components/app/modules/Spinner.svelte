@@ -62,6 +62,6 @@
         /></svg
     >
     {#if text != ''}
-        <p class="animate-pulse">{text}</p>
+        <p class="animate-pulse text-onBackground">{text}</p>
     {/if}
 </div>

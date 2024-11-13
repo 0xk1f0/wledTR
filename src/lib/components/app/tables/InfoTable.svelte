@@ -23,8 +23,8 @@
         <Spinner text="" />
     </div>
 {:else}
-    <div class="m-auto bg-blue-800 bg-opacity-10 rounded-lg max-h-[calc(100vh-8rem)] overflow-scroll">
-        <table class="m-4">
+    <div class="m-auto bg-surface rounded-lg max-h-[calc(100vh-8rem)] overflow-scroll">
+        <table class="m-4 text-onSurface">
             <tbody>
                 {#each Object.entries(data) as [type, value]}
                     {#if isWifiData(value)}

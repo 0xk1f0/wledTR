@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "tauri": "tauri",
-        "dev": "vite dev",
+        "dev": "vite dev --host",
         "build": "vite build",
         "preview": "vite preview",
         "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -35,6 +35,6 @@
         "@jaames/iro": "^5.5.2",
         "@tauri-apps/api": "^2.1.0",
         "@tauri-apps/plugin-store": "^2.1.0",
-        "tauri-plugin-m3-api": "github:0xk1f0/tauri-plugin-m3"
+        "tauri-plugin-m3": "github:0xk1f0/tauri-plugin-m3"
     }
 }

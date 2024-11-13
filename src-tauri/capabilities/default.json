@@ -13,6 +13,7 @@
     "core:image:default",
     "core:menu:default",
     "core:tray:default",
-    "store:default"
+    "store:default",
+    "m3:default"
   ]
 }

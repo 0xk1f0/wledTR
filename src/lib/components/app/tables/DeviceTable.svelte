@@ -95,9 +95,9 @@
     </div>
 {:else if data.devices.length < 1 && !addingNew}
     <div class="flex flex-col space-y-4 justify-center items-center h-[calc(100vh-8rem)] overflow-scroll">
-        <p class="m-4">No Devices Found :&lbrace;</p>
+        <p class="m-4 font-bold text-base text-onBackground">No Devices Found</p>
         <button
-            class="rounded-full px-7 py-2 bg-blue-400 bg-opacity-75 text-white text-xl active:bg-accent disabled:opacity-50"
+            class="rounded-full px-7 py-2 bg-primaryContainer text-onPrimaryContainer text-xl active:bg-accent disabled:opacity-50"
             onclick={() => {
                 addingNew = true;
             }}
@@ -112,7 +112,7 @@
                     <tr>
                         <td class="text-2xl">
                             <div
-                                class="flex flex-row space-x-2 justify-center bg-blue-800 bg-opacity-25 pl-3 rounded-full my-1"
+                                class="flex flex-row space-x-2 justify-center bg-surface text-onSurface pl-3 rounded-full my-1"
                             >
                                 <button
                                     class="active:bg-accent disabled:opacity-50 rounded-full"
@@ -122,7 +122,7 @@
                                 </button>
                                 <button
                                     class="{checkDevices.has(device)
-                                        ? 'bg-red-800'
+                                        ? 'bg-secondaryContainer'
                                         : 'bg-transparent'} text-2xl p-2 rounded-full"
                                     onclick={() => updateCheckedDevices(device)}
                                     ><img
@@ -142,7 +142,7 @@
                             <!-- svelte-ignore a11y-autofocus -->
                             <input
                                 id="newInput"
-                                class="bg-transparent border-2 rounded-full px-4 py-1 text-center text-2xl"
+                                class="bg-transparent border-2 border-onBackground rounded-full px-4 py-1 text-center text-onBackground text-2xl font-medium outline-none"
                                 bind:value={newInput}
                                 autofocus
                             />
@@ -153,12 +153,12 @@
         </table>
         {#if checkDevices.size > 0}
             <button
-                class="rounded-full px-7 py-2 bg-red-800 bg-opacity-75 text-white text-xl active:bg-accent disabled:opacity-50"
+                class="rounded-full px-7 py-2 bg-secondaryContainer text-onSecondaryContainer text-xl active:bg-accent disabled:opacity-50"
                 onclick={() => deleteDevices(checkDevices)}>Delete ({checkDevices.size})</button
             >
         {:else}
             <button
-                class="rounded-full px-7 py-2 bg-blue-600 bg-opacity-50 text-white text-xl active:bg-accent disabled:opacity-50"
+                class="rounded-full px-7 py-2 bg-primaryContainer text-onPrimaryContainer text-xl active:bg-accent disabled:opacity-50"
                 onclick={() => {
                     if (addingNew && validIP(newInput)) {
                         addDevice({ host: newInput, mdns: false });
