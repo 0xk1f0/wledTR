@@ -236,7 +236,7 @@
                     <p class="font-bold text-base text-onBackground">Select/Add a Device</p>
                 </div>
             {:else}
-                <div class="flex flex-row w-full justify-center items-center my-8 pt-[2vh]">
+                <div class="flex flex-row w-full justify-center items-center mt-[3vh]">
                     <p class="font-bold text-3xl align-middle text-onBackground">
                         {host == '' ? 'wledTR' : deviceName}
                     </p>
@@ -255,7 +255,7 @@
                             <input
                                 type="range"
                                 id="brightness-slider"
-                                class="w-full h-2 bg-primaryContainer rounded-full appearance-none"
+                                class="w-full h-2 bg-primary rounded-full appearance-none"
                                 bind:value={brightness}
                                 min="1"
                                 max="255"
@@ -268,19 +268,19 @@
                     </div>
                     <div class="flex flex-row justify-center items-center space-x-4">
                         <button
-                            class="p-4 bg-primaryContainer rounded-full active:bg-accent disabled:opacity-50"
+                            class="p-4 bg-primary rounded-full active:bg-accent disabled:opacity-50"
                             onclick={setPower}
                         >
-                            <img width="48" height="48" src={powered ? FireSolid : FireOutline} alt="" />
+                            <img width="48" height="48" class="dark:invert" src={powered ? FireSolid : FireOutline} alt="" />
                         </button>
                         <button
-                            class="p-4 bg-primaryContainer rounded-full active:bg-accent disabled:opacity-50"
+                            class="p-4 bg-primary rounded-full active:bg-accent disabled:opacity-50"
                             disabled={!powered}
                             onclick={() => {
                                 setColor();
                                 setBrightness();
                             }}
-                            ><img width="48" height="48" src={CheckmarkOutline} alt="" />
+                            ><img width="48" height="48" class="dark:invert" src={CheckmarkOutline} alt="" />
                         </button>
                     </div>
                 </div>
@@ -296,23 +296,23 @@
                 <InfoTable bind:data={infoData} />
             {/if}
         {/if}
-        <div class="flex w-full justify-center min-h-[6.5rem] max-h-[6.5rem] bg-surface py-[2vh]">
+        <div class="flex w-full justify-center min-h-[6.5rem] max-h-[6.5rem] bg-primaryContainer">
             <div class="flex flex-1 flex-row justify-between my-auto">
                 <div>
                     <button
                         style="opacity: {tab.devices ? '100%' : '50%'};"
                         onclick={() => tabSwitch('devices')}
                         class="w-14 mx-10"
-                        ><div class="rounded-full p-1 {tab.devices ? 'bg-primaryContainer' : 'bg-transparent'}">
+                        ><div class="rounded-full p-1 {tab.devices ? 'bg-primary' : 'bg-transparent'}">
                             <img
                                 width="24"
                                 height="24"
-                                class="mx-auto"
+                                class="mx-auto dark:invert"
                                 src={tab.devices ? BookmarkSolid : BookmarkOutline}
                                 alt=""
                             />
                         </div>
-                        <p class="text-onSurface">Devices</p></button
+                        <p class="text-onPrimaryContainer">Devices</p></button
                     >
                 </div>
                 <div>
@@ -320,16 +320,16 @@
                         style="opacity: {tab.light ? '100%' : '50%'};"
                         onclick={() => tabSwitch('light')}
                         class="w-14 mx-2"
-                        ><div class="rounded-full p-1 {tab.light ? 'bg-primaryContainer' : 'bg-transparent'}">
+                        ><div class="rounded-full p-1 {tab.light ? 'bg-primary' : 'bg-transparent'}">
                             <img
                                 width="24"
                                 height="24"
-                                class="mx-auto"
+                                class="mx-auto dark:invert"
                                 src={tab.light ? LightSolid : LightOutline}
                                 alt=""
                             />
                         </div>
-                        <p class="text-onSurface">Light</p></button
+                        <p class="text-onPrimaryContainer">Light</p></button
                     >
                 </div>
                 <div>
@@ -337,16 +337,16 @@
                         style="opacity: {tab.info ? '100%' : '50%'};"
                         onclick={() => tabSwitch('info')}
                         class="w-14 mx-10"
-                        ><div class="rounded-full p-1 {tab.info ? 'bg-primaryContainer' : 'bg-transparent'}">
+                        ><div class="rounded-full p-1 {tab.info ? 'bg-primary' : 'bg-transparent'}">
                             <img
                                 width="24"
                                 height="24"
-                                class="mx-auto"
+                                class="mx-auto dark:invert"
                                 src={tab.info ? SettingsSolid : SettingsOutline}
                                 alt=""
                             />
                         </div>
-                        <p class="text-onSurface">Info</p>
+                        <p class="text-onPrimaryContainer">Info</p>
                     </button>
                 </div>
             </div>

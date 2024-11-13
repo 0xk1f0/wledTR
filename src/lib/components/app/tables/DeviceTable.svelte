@@ -94,10 +94,10 @@
         <Spinner text="" />
     </div>
 {:else if data.devices.length < 1 && !addingNew}
-    <div class="flex flex-col space-y-4 justify-center items-center h-[calc(100vh-8rem)] overflow-scroll">
+    <div class="flex flex-col space-y-4 justify-center items-center h-[calc(100vh-8rem-4vh)] overflow-scroll">
         <p class="m-4 font-bold text-base text-onBackground">No Devices Found</p>
         <button
-            class="rounded-full px-7 py-2 bg-primaryContainer text-onPrimaryContainer text-xl active:bg-accent disabled:opacity-50"
+            class="rounded-full px-7 py-2 bg-primary text-onPrimary text-xl active:bg-accent disabled:opacity-50"
             onclick={() => {
                 addingNew = true;
             }}
@@ -112,7 +112,7 @@
                     <tr>
                         <td class="text-2xl">
                             <div
-                                class="flex flex-row space-x-2 justify-center bg-surface text-onSurface pl-3 rounded-full my-1"
+                                class="flex flex-row space-x-2 justify-center bg-primaryContainer text-onPrimaryContainer pl-3 rounded-full my-1"
                             >
                                 <button
                                     class="active:bg-accent disabled:opacity-50 rounded-full"
@@ -158,7 +158,7 @@
             >
         {:else}
             <button
-                class="rounded-full px-7 py-2 bg-primaryContainer text-onPrimaryContainer text-xl active:bg-accent disabled:opacity-50"
+                class="rounded-full px-7 py-2 bg-primary text-onPrimary text-xl active:bg-accent disabled:opacity-50"
                 onclick={() => {
                     if (addingNew && validIP(newInput)) {
                         addDevice({ host: newInput, mdns: false });
