@@ -227,7 +227,7 @@
                     <p class="font-bold text-base">Select/Add a Device</p>
                 </div>
             {:else}
-                <div class="flex flex-row w-full justify-center items-center py-8">
+                <div class="flex flex-row w-full justify-center items-center my-8 pt-[2vh]">
                     <p class="font-bold text-3xl align-middle">{host == '' ? 'wledTR' : deviceName}</p>
                 </div>
                 <div class="flex flex-1 flex-col justify-center items-center space-y-10">
@@ -287,7 +287,7 @@
                 <InfoTable bind:data={infoData} />
             {/if}
         {/if}
-        <div class="flex w-full justify-center min-h-[5.25rem] max-h-[5.25rem] bg-blue-500 bg-opacity-5">
+        <div class="flex w-full justify-center min-h-[5.25rem] max-h-[5.25rem] bg-blue-500 bg-opacity-5 pb-[2vh]">
             <div class="flex flex-1 flex-row justify-between my-auto">
                 <div>
                     <button

@@ -8,7 +8,11 @@
         "build": "vite build",
         "preview": "vite preview",
         "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-        "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+        "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+        "make:init": "NDK_HOME=$ANDROID_HOME/ndk/27.2.12479018 JAVA_HOME=/usr/lib/jvm/java-17-openjdk tauri android init && tauri icon ./src-tauri/icons/logo.png",
+        "make:linux": "NO_STRIP=true tauri build",
+        "make:android": "NDK_HOME=$ANDROID_HOME/ndk/27.2.12479018 JAVA_HOME=/usr/lib/jvm/java-17-openjdk tauri android build",
+        "make:clean": "rm -rf ./src-tauri/gen/android/ ./src-tauri/target/ build/ .svelte-kit/"
     },
     "devDependencies": {
         "@sveltejs/adapter-auto": "^3.3.1",

@@ -5,3 +5,5 @@
 /gen/android
 .cargo/
 icons/
+/.tauri
+Cargo.lock

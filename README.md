@@ -30,17 +30,21 @@ Unfortunately not all features are accessible via the API and there is also zero
 
 ## How to Build
 
-This repo includes a Makefile that should make the building process pretty streamlined.
+Initializing and Building is handled through `npm` scripts.
+
+The following instructions are for building on a Linux machine.
 
 ### Linux
 
 Follow the instructions [provided by Tauri](https://beta.tauri.app/guides/prerequisites/#linux), then run:
 
-```bash
+```sh
+# install
+npm install
 # initialize
-make init
+npm run make:init
 # build for linux
-make linux
+npm run make:linux
 ```
 
 ### Android
@@ -53,17 +57,21 @@ This project uses a fixed set of libraries, make sure to install the following:
 # using the sdkmanager utlitity
 sdkmanager --install "build-tools;34.0.0"
 sdkmanager --install "platforms;android-34"
-sdkmanager --install "ndk;26.3.11579264"
+sdkmanager --install "ndk/27.2.12479018"
 sdkmanager --install "emulator"
 ```
 
 Then run:
 
-```bash
+```sh
+# install
+npm install
 # initialize
-make init
-# build for linux
-make android
+npm run make:init
+# make sure $ANDROID_HOME is set
+export ANDROID_HOME="/home/$USER/Android/Sdk"
+# build for android
+npm run make:android
 ```
 
 ## Checklist
