@@ -10,7 +10,7 @@
     import { getCurrentWindow } from '@tauri-apps/api/window';
     // tauri
     import { invoke } from '@tauri-apps/api/core';
-    import { colors, updateEnvironment } from 'tauri-plugin-m3';
+    import { M3 } from 'tauri-plugin-m3';
     // types
     import type { StateResponse, InfoResponse } from '$lib/types/responses.ts';
     import type { StoreData } from '$lib/types/store.ts';
@@ -47,11 +47,8 @@
     };
 
     onMount(async () => {
-        colors()
-            .then((r) => {
-                if (r) updateEnvironment(r);
-            })
-            .catch();
+        const Mat3 = new M3();
+        await Mat3.fetch().apply();
         await getCurrentWindow().onResized(async () => {
             if (screenWidth != window.innerWidth || screenHeight != window.innerHeight) {
                 loading = true;
@@ -259,7 +256,13 @@
                             class="p-4 bg-primary rounded-full active:bg-accent disabled:opacity-50"
                             onclick={setPower}
                         >
-                            <img width="48" height="48" class="dark:invert" src={powered ? FireSolid : FireOutline} alt="" />
+                            <img
+                                width="48"
+                                height="48"
+                                class="dark:invert"
+                                src={powered ? FireSolid : FireOutline}
+                                alt=""
+                            />
                         </button>
                         <button
                             class="p-4 bg-primary rounded-full active:bg-accent disabled:opacity-50"
