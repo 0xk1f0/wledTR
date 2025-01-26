@@ -13,12 +13,12 @@
     import TrashOutline from '$lib/assets/trash-outline.svg';
     import TrashSolid from '$lib/assets/trash-solid.svg';
 
-    const dispatch = createEventDispatcher();
-    let loading = false;
-    let addingNew: boolean = false;
-    let newInput: string = '';
-    let checkDevices: Set<Device> = new Set();
-    let data: StoreData = { devices: [] };
+    let { select, change } = $props();
+    let loading = $state(false);
+    let addingNew: boolean = $state(false);
+    let newInput: string = $state('');
+    let checkDevices: Set<Device> = $state(new Set());
+    let data: StoreData = $state({ devices: [] });
     let storage: StorageHandler = new StorageHandler('devices.conf');
 
     onMount(async () => {
@@ -26,12 +26,6 @@
         data = await storage.open().load();
         loading = false;
     });
-
-    function dispatchSelect(host: string) {
-        dispatch('select', {
-            host: host
-        });
-    }
 
     function updateCheckedDevices(device: Device) {
         if (checkDevices.has(device)) {
@@ -75,7 +69,7 @@
         data = await storage.open().load();
         await sleep(200);
         loading = false;
-        if (checkIsValid) dispatch('change');
+        if (checkIsValid) change();
     }
 
     async function deleteDevices(devices: Set<Device>) {
@@ -85,7 +79,7 @@
         data = await storage.open().load();
         await sleep(200);
         loading = false;
-        dispatch('change');
+        change();
     }
 </script>
 
@@ -116,7 +110,7 @@
                             >
                                 <button
                                     class="active:bg-accent disabled:opacity-50 rounded-full"
-                                    onclick={() => dispatchSelect(device.host)}
+                                    onclick={() => select(device.host)}
                                 >
                                     {device.host}
                                 </button>
@@ -139,7 +133,7 @@
                 {#if addingNew}
                     <tr class="text-left">
                         <td>
-                            <!-- svelte-ignore a11y-autofocus -->
+                            <!-- svelte-ignore a11y_autofocus -->
                             <input
                                 id="newInput"
                                 class="bg-transparent border-2 border-onBackground rounded-full px-4 py-1 text-center text-onBackground text-2xl font-medium outline-none"

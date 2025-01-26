@@ -72,6 +72,58 @@ impl WLEDController {
         Ok(json_body)
     }
 
+    pub async fn get_presets(host: String) -> Result<String, String> {
+        // concat to full URL
+        let url = format!("http://{}/presets.json", host);
+
+        // post to host
+        let response = Client::new()
+            .get(url)
+            .timeout(Duration::from_secs(5))
+            .send()
+            .await
+            .map_err(|_| "Request Error".to_string())?;
+
+        // get response text
+        let json_body = response
+            .text()
+            .await
+            .map_err(|_| "Response Error".to_string())?;
+
+        Ok(json_body)
+    }
+
+    pub async fn set_preset(host: String, preset: usize) -> Result<String, String> {
+        // concat to full URL
+        let url = format!("http://{}/json/state", host);
+
+        // assemble body
+        let payload = serde_json::json!({
+            "ps": preset
+        });
+
+        // post to host
+        let response = Client::new()
+            .post(url)
+            .timeout(Duration::from_secs(5))
+            .json(&payload)
+            .send()
+            .await
+            .map_err(|_| "Response Error".to_string())?;
+
+        // convert to JSON
+        let json_body = response
+            .json::<NormalResponse>()
+            .await
+            .map_err(|_| "Decode Error".to_string())?;
+
+        if json_body.success == true {
+            return Ok("ok".to_string());
+        }
+
+        Err("Something went wrong".to_string())
+    }
+
     pub async fn set_power(host: String) -> Result<String, String> {
         // concat to full URL
         let url = format!("http://{}/json/state", host);

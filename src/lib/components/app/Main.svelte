@@ -12,7 +12,7 @@
     import { invoke } from '@tauri-apps/api/core';
     import { M3 } from 'tauri-plugin-m3';
     // types
-    import type { StateResponse, InfoResponse } from '$lib/types/responses.ts';
+    import type { StateResponse, InfoResponse, PresetResponse } from '$lib/types/responses.ts';
     import type { StoreData } from '$lib/types/store.ts';
     // utils
     import StorageHandler from '$lib/util/storage';
@@ -35,9 +35,12 @@
     let deviceName: string = 'Unknown';
     let currentColor: string = '#ffffff';
     let currentRgb: { r: number; g: number; b: number } = { r: 255, g: 255, b: 255 };
+    let currenPreset: number = -1;
     let screenWidth = window.innerWidth;
     let screenHeight = window.innerHeight;
     let infoData: InfoResponse;
+    let presetData: { [x: string]: PresetResponse } | false = false;
+    let availablePresets: number[];
     let storage: StorageHandler = new StorageHandler('devices.conf');
     let data: StoreData = { devices: [] };
     let tab = {
@@ -63,6 +66,10 @@
         if (host != '') await refresh();
         loading = false;
     });
+
+    async function sleep(ms: number) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
 
     function toHex(c: number) {
         const hex = c.toString(16);
@@ -91,21 +98,23 @@
     }
 
     async function refresh() {
+        loading = true;
         powered = false;
         brightness = 0;
         deviceName = 'Unknown';
         currentColor = '#ffffff';
         currentRgb = { r: 255, g: 255, b: 255 };
+        currenPreset = -1;
         let success = await getState();
-        if (success) await getInfo();
-    }
-
-    async function sleep(ms: number) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
+        if (success) {
+            await getInfo();
+            await getPresets();
+        }
+        await sleep(200);
+        loading = false;
     }
 
     async function getState(): Promise<boolean> {
-        loading = true;
         let result: string = await invoke('get_state', {
             host: host
         });
@@ -117,19 +126,17 @@
                 b: data.seg[0].col[0][2]
             };
             currentColor = '#' + toHex(currentRgb.r) + toHex(currentRgb.g) + toHex(currentRgb.b);
+            currenPreset = data.ps;
             powered = data.on;
             brightness = data.bri;
         } catch {
             console.warn(result);
             return false;
         }
-        await sleep(200);
-        loading = false;
         return true;
     }
 
     async function getInfo() {
-        loading = true;
         let result: string = await invoke('get_info', {
             host: host
         });
@@ -139,12 +146,28 @@
         } catch {
             console.warn(result);
         }
-        await sleep(200);
-        loading = false;
+    }
+
+    async function getPresets() {
+        let result: string = await invoke('get_presets', {
+            host: host
+        });
+        try {
+            presetData = JSON.parse(result);
+            if (presetData) {
+                availablePresets = Object.entries(presetData)
+                    .filter((entry) => entry[1].n !== undefined)
+                    .map((entry) => {
+                        return Number(entry[0]);
+                    });
+            }
+        } catch {
+            presetData = false;
+            console.warn(result);
+        }
     }
 
     async function setPower() {
-        loading = true;
         let result: string = await invoke('power_toggle', {
             host: host
         });
@@ -155,12 +178,9 @@
         } else {
             console.warn(result);
         }
-        await sleep(200);
-        loading = false;
     }
 
     async function setBrightness() {
-        loading = true;
         let result: string = await invoke('set_brightness', {
             host: host,
             brightness: brightness
@@ -168,13 +188,9 @@
         if (result != 'ok') {
             console.warn(result);
         }
-        await sleep(200);
-        loading = false;
     }
 
     async function setColor() {
-        loaderText = 'Applying';
-        loading = true;
         let result: string = await invoke('set_color', {
             host: host,
             r: currentRgb.r,
@@ -184,19 +200,53 @@
         if (result != 'ok') {
             console.warn(result);
         }
-        await sleep(200);
-        loading = false;
     }
 
-    async function colorChange(event: any) {
-        currentColor = event.detail.hex;
-        currentRgb = event.detail.rgb;
+    async function setPreset(id: number) {
+        let result: string = await invoke('set_preset', {
+            host: host,
+            preset: id
+        });
+        if (result != 'ok') {
+            console.warn(result);
+        }
     }
 
-    async function deviceChange(event: any) {
+    async function presetSwitch(direction: 'up' | 'down') {
+        let chosenPresetId = 0;
+        let currentIndex = availablePresets.indexOf(currenPreset);
+        if (direction == 'up') {
+            if (currenPreset == -1) {
+                chosenPresetId = availablePresets[0];
+            } else {
+                chosenPresetId =
+                    currentIndex == availablePresets.length - 1
+                        ? availablePresets[0]
+                        : availablePresets[currentIndex + 1];
+            }
+        } else {
+            if (currenPreset == -1) {
+                chosenPresetId = availablePresets[0];
+            } else {
+                chosenPresetId =
+                    currentIndex == 0
+                        ? availablePresets[availablePresets.length - 1]
+                        : availablePresets[currentIndex - 1];
+            }
+        }
+
+        await setPreset(chosenPresetId);
+    }
+
+    async function colorChange(data: any) {
+        currentColor = data.hex;
+        currentRgb = data.rgb;
+    }
+
+    async function deviceChange(data: any) {
         tabSwitch('light');
         loading = true;
-        host = event.detail.host;
+        host = data;
         await refresh();
         await sleep(200);
         loading = false;
@@ -236,7 +286,12 @@
                     <Picker
                         bind:initial={currentColor}
                         width={Math.max(Math.min(Math.round(screenWidth * 0.66), 450), 100)}
-                        on:color={colorChange}
+                        change={colorChange}
+                        end={() => {
+                            setColor().then(() => {
+                                refresh();
+                            });
+                        }}
                     />
                     <div class="flex flex-col w-2/3 justify-center items-center space-y-5 rounded-full py-4">
                         <div class="w-[80%]">
@@ -245,16 +300,52 @@
                                 id="brightness-slider"
                                 class="w-full h-6 bg-primary rounded-full appearance-none"
                                 bind:value={brightness}
+                                onchange={() => {
+                                    setBrightness().then(() => {
+                                        refresh();
+                                    });
+                                }}
                                 min="1"
                                 max="255"
                                 step="1"
                             />
                         </div>
                     </div>
+                    {#if presetData != false}
+                        <div class="flex flex-row justify-center items-center space-x-6">
+                            <button
+                                onclick={() => {
+                                    presetSwitch('down').then(() => {
+                                        refresh();
+                                    });
+                                }}
+                                class="py-2 px-4 bg-primary rounded-full active:bg-accent disabled:opacity-50 text-onPrimary font-bold text-xl"
+                            >
+                                &lt
+                            </button>
+                            <p class="text-onBackground uppercase text-xl">
+                                {currenPreset == -1 ? 'Inactive' : presetData[currenPreset].n}
+                            </p>
+                            <button
+                                onclick={() => {
+                                    presetSwitch('up').then(() => {
+                                        refresh();
+                                    });
+                                }}
+                                class="py-2 px-4 bg-primary rounded-full active:bg-accent disabled:opacity-50 text-onPrimary font-bold text-xl"
+                            >
+                                &gt
+                            </button>
+                        </div>
+                    {/if}
                     <div class="flex flex-row justify-center items-center space-x-6">
                         <button
                             class="p-4 bg-primary rounded-full active:bg-accent disabled:opacity-50"
-                            onclick={setPower}
+                            onclick={() => {
+                                setPower().then(() => {
+                                    refresh();
+                                });
+                            }}
                         >
                             <img
                                 width="48"
@@ -264,20 +355,11 @@
                                 alt=""
                             />
                         </button>
-                        <button
-                            class="p-4 bg-primary rounded-full active:bg-accent disabled:opacity-50"
-                            disabled={!powered}
-                            onclick={() => {
-                                setColor();
-                                setBrightness();
-                            }}
-                            ><img width="48" height="48" class="dark:invert" src={CheckmarkOutline} alt="" />
-                        </button>
                     </div>
                 </div>
             {/if}
         {:else if tab.devices}
-            <DeviceTable on:select={deviceChange} on:change={tableChange} />
+            <DeviceTable select={deviceChange} change={tableChange} />
         {:else if tab.info}
             {#if host == ''}
                 <div class="flex w-full h-full justify-center items-center">

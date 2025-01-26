@@ -43,3 +43,7 @@ export type NormalResponse = {
 export type PowerResponse = {
     on: boolean;
 };
+
+export type PresetResponse = {
+    n: string;
+};

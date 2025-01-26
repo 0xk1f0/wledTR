@@ -14,7 +14,9 @@ pub fn run() {
             get_state,
             get_info,
             set_brightness,
-            check_info
+            check_info,
+            get_presets,
+            set_preset
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -22,9 +24,7 @@ pub fn run() {
 
 #[tauri::command]
 async fn check_info(host: String) -> String {
-    WLEDController::check_info(host)
-        .await
-        .unwrap_or_else(|e| e)
+    WLEDController::check_info(host).await.unwrap_or_else(|e| e)
 }
 
 #[tauri::command]
@@ -53,6 +53,20 @@ async fn get_state(host: String) -> String {
 #[tauri::command]
 async fn set_brightness(host: String, brightness: u8) -> String {
     WLEDController::set_brightness(host, brightness)
+        .await
+        .unwrap_or_else(|e| e)
+}
+
+#[tauri::command]
+async fn get_presets(host: String) -> String {
+    WLEDController::get_presets(host)
+        .await
+        .unwrap_or_else(|e| e)
+}
+
+#[tauri::command]
+async fn set_preset(host: String, preset: usize) -> String {
+    WLEDController::set_preset(host, preset)
         .await
         .unwrap_or_else(|e| e)
 }

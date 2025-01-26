@@ -5,18 +5,9 @@
 
 <script lang="ts">
     import iro from '@jaames/iro';
-    import { onMount, createEventDispatcher } from 'svelte';
+    import { onMount } from 'svelte';
 
-    let { width = 250, initial = $bindable('#ffffff') }: { width: number; initial: string } = $props();
-
-    const dispatch = createEventDispatcher();
-
-    async function dispatchColor(hex: string, rgb: { r: number; g: number; b: number }) {
-        dispatch('color', {
-            hex: hex,
-            rgb: rgb
-        });
-    }
+    let { width = 250, initial = $bindable('#ffffff'), change, end } = $props();
 
     onMount(() => {
         let colorPicker: any = new (iro as any).ColorPicker('#picker', {
@@ -31,7 +22,17 @@
         });
 
         colorPicker.on('color:change', function (color: any) {
-            dispatchColor(color.hexString, color.rgb);
+            change({
+                hex: color.hexString,
+                rgb: color.rgb
+            });
+        });
+
+        colorPicker.on('input:end', function (color: any) {
+            end({
+                hex: color.hexString,
+                rgb: color.rgb
+            });
         });
     });
 </script>
