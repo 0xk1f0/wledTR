@@ -50,8 +50,10 @@
     };
 
     onMount(async () => {
-        const Mat3 = new M3();
-        await Mat3.fetch().apply();
+        // apply material colors
+        await M3.fetch("system").apply();
+        await M3.barColor("system");
+        // do rest of init
         await getCurrentWindow().onResized(async () => {
             if (screenWidth != window.innerWidth || screenHeight != window.innerHeight) {
                 loading = true;

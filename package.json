@@ -32,6 +32,6 @@
         "@tailwindcss/vite": "~4.0.0",
         "@tauri-apps/api": "~2.2.0",
         "@tauri-apps/plugin-store": "~2.2.0",
-        "tauri-plugin-m3": "~0.1.1"
+        "tauri-plugin-m3": "github:0xk1f0/tauri-plugin-m3"
     }
 }
