@@ -91,7 +91,7 @@
     <div class="m-auto flex flex-col space-y-4 justify-center items-center max-h-[calc(100vh-12rem)] overflow-scroll">
         <p class="m-4 font-bold text-base text-onBackground">No Devices Found</p>
         <button
-            class="rounded-full px-7 py-2 bg-primary text-onPrimary text-xl active:bg-accent disabled:opacity-50"
+            class="rounded-full px-7 py-2 bg-primary text-onPrimary text-xl disabled:opacity-50"
             onclick={() => {
                 addingNew = true;
             }}
@@ -109,7 +109,7 @@
                                 class="flex flex-row space-x-2 justify-center bg-surfaceVariant text-onSurfaceVariant pl-3 rounded-full my-1"
                             >
                                 <button
-                                    class="active:bg-accent disabled:opacity-50 rounded-full"
+                                    class="disabled:opacity-50 rounded-full"
                                     onclick={() => select(device.host)}
                                 >
                                     {device.host}
@@ -147,12 +147,12 @@
         </table>
         {#if checkDevices.size > 0}
             <button
-                class="rounded-full px-7 py-2 bg-secondaryContainer text-onSecondaryContainer text-xl active:bg-accent disabled:opacity-50"
+                class="rounded-full px-7 py-2 bg-secondaryContainer text-onSecondaryContainer text-xl disabled:opacity-50"
                 onclick={() => deleteDevices(checkDevices)}>Delete ({checkDevices.size})</button
             >
         {:else}
             <button
-                class="rounded-full px-7 py-2 bg-primary text-onPrimary text-xl active:bg-accent disabled:opacity-50"
+                class="rounded-full px-7 py-2 bg-primary text-onPrimary text-xl disabled:opacity-50"
                 onclick={() => {
                     if (addingNew && validIP(newInput)) {
                         addDevice({ host: newInput, mdns: false });

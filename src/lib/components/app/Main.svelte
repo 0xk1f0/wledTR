@@ -290,8 +290,8 @@
                         width={Math.max(Math.min(Math.round(screenWidth * 0.66), 450), 100)}
                         change={colorChange}
                         end={() => {
-                            setColor().then(() => {
-                                refresh();
+                            setColor().then(async () => {
+                                await refresh();
                             });
                         }}
                     />
@@ -303,8 +303,8 @@
                                 class="w-full h-6 bg-primary rounded-full appearance-none"
                                 bind:value={brightness}
                                 onchange={() => {
-                                    setBrightness().then(() => {
-                                        refresh();
+                                    setBrightness().then(async () => {
+                                        await refresh();
                                     });
                                 }}
                                 min="1"
@@ -317,11 +317,11 @@
                         <div class="flex flex-row justify-center items-center space-x-6">
                             <button
                                 onclick={() => {
-                                    presetSwitch('down').then(() => {
-                                        refresh();
+                                    presetSwitch('down').then(async () => {
+                                        await refresh();
                                     });
                                 }}
-                                class="py-2 px-4 bg-primary rounded-full active:bg-accent disabled:opacity-50 text-onPrimary font-bold text-xl"
+                                class="py-2 px-4 bg-primary rounded-full disabled:opacity-50 text-onPrimary font-bold text-xl"
                             >
                                 &lt
                             </button>
@@ -330,11 +330,11 @@
                             </p>
                             <button
                                 onclick={() => {
-                                    presetSwitch('up').then(() => {
-                                        refresh();
+                                    presetSwitch('up').then(async () => {
+                                        await refresh();
                                     });
                                 }}
-                                class="py-2 px-4 bg-primary rounded-full active:bg-accent disabled:opacity-50 text-onPrimary font-bold text-xl"
+                                class="py-2 px-4 bg-primary rounded-full disabled:opacity-50 text-onPrimary font-bold text-xl"
                             >
                                 &gt
                             </button>
@@ -342,10 +342,10 @@
                     {/if}
                     <div class="flex flex-row justify-center items-center space-x-6">
                         <button
-                            class="p-4 bg-primary rounded-full active:bg-accent disabled:opacity-50"
+                            class="p-4 bg-primary rounded-full disabled:opacity-50"
                             onclick={() => {
-                                setPower().then(() => {
-                                    refresh();
+                                setPower().then(async () => {
+                                    await refresh();
                                 });
                             }}
                         >
