@@ -28,6 +28,8 @@
 <div class="flex flex-col justify-center text-center">
     <svg fill="#fff" width="128" height="128" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
         ><style>
+            @reference "tailwindcss/theme";
+
             .spinner_l9ve {
                 animation: spinner_rcyq 1.2s cubic-bezier(0.52, 0.6, 0.25, 0.99) infinite;
             }
