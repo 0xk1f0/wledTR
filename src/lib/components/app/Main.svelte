@@ -17,7 +17,6 @@
     // utils
     import StorageHandler from '$lib/util/storage';
     // icons
-    import CheckmarkOutline from '$lib/assets/checkmark-outline.svg';
     import BookmarkOutline from '$lib/assets/bookmark-outline.svg';
     import BookmarkSolid from '$lib/assets/bookmark-solid.svg';
     import LightOutline from '$lib/assets/light-outline.svg';
@@ -51,7 +50,7 @@
 
     onMount(async () => {
         // apply material colors
-        await M3.apply("system");
+        await M3.applyColors("system");
         await M3.setBarColor("system");
         // do rest of init
         await getCurrentWindow().onResized(async () => {

@@ -1,6 +1,6 @@
 {
     "productName": "wledTR",
-    "version": "0.1.2",
+    "version": "0.1.4",
     "identifier": "org.wledtr.app",
     "build": {
         "frontendDist": "../build",
