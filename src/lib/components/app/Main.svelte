@@ -51,8 +51,8 @@
 
     onMount(async () => {
         // apply material colors
-        await M3.fetch("system").apply();
-        await M3.barColor("system");
+        await M3.apply("system");
+        await M3.setBarColor("system");
         // do rest of init
         await getCurrentWindow().onResized(async () => {
             if (screenWidth != window.innerWidth || screenHeight != window.innerHeight) {
